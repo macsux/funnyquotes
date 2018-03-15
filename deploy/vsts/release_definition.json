@@ -141,7 +141,7 @@
                         "org":"$(org)",
                         "space":"$(space)",
                         "deploymentOptions":"manifest",
-                        "cfManifest":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesLegacyUI/manifest-services.yml",
+                        "cfManifest":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesLegacyUI/manifest-services.yml",
                         "name":"",
                         "instances":"",
                         "memoryLimit":"",
@@ -154,7 +154,7 @@
                         "bindServices":"false",
                         "appName":"",
                         "bindServiceArgs":"",
-                        "workingDirectory":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesLegacyUI",
+                        "workingDirectory":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesLegacyUI",
                         "cfToolLocation":"$(System.DefaultWorkingDirectory)\cf.exe"
                      }
                   },
@@ -175,7 +175,7 @@
                         "org":"$(org)",
                         "space":"$(space)",
                         "deploymentOptions":"manifest",
-                        "cfManifest":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesLegacyService/manifest-services.yml",
+                        "cfManifest":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesLegacyService/manifest-services.yml",
                         "name":"",
                         "instances":"",
                         "memoryLimit":"",
@@ -188,7 +188,7 @@
                         "bindServices":"false",
                         "appName":"",
                         "bindServiceArgs":"",
-                        "workingDirectory":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesLegacyService",
+                        "workingDirectory":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesLegacyService",
                         "cfToolLocation":"$(System.DefaultWorkingDirectory)\cf.exe"
                      }
                   },
@@ -209,7 +209,7 @@
                         "org":"$(org)",
                         "space":"$(space)",
                         "deploymentOptions":"manifest",
-                        "cfManifest":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesServices/manifest.yml",
+                        "cfManifest":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesServices/manifest.yml",
                         "name":"",
                         "instances":"",
                         "memoryLimit":"",
@@ -222,7 +222,7 @@
                         "bindServices":"false",
                         "appName":"",
                         "bindServiceArgs":"",
-                        "workingDirectory":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesServices",
+                        "workingDirectory":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesServices",
                         "cfToolLocation":"$(System.DefaultWorkingDirectory)\cf.exe"
                      }
                   },
@@ -243,7 +243,7 @@
                         "org":"$(org)",
                         "space":"$(space)",
                         "deploymentOptions":"manifest",
-                        "cfManifest":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesUI/manifest.yml",
+                        "cfManifest":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesUI/manifest.yml",
                         "name":"",
                         "instances":"",
                         "memoryLimit":"",
@@ -256,7 +256,7 @@
                         "bindServices":"false",
                         "appName":"",
                         "bindServiceArgs":"",
-                        "workingDirectory":"$(System.DefaultWorkingDirectory)/Fortunes/drop/FortunesUI",
+                        "workingDirectory":"$(System.DefaultWorkingDirectory)/FunnyQuotes/drop/FunnyQuotesUI",
                         "cfToolLocation":"$(System.DefaultWorkingDirectory)\cf.exe"
                      }
                   }

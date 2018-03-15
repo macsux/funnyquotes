@@ -19,16 +19,16 @@ if(-Not(Test-Path nuget.exe))
 
 .\nuget restore ..\src\PCFDotNetLegacyToCloudNative.sln
 
-msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FortunesUIForms  /p:OutputPath=tmp  ..\src\FortunesUIForms\FortunesUIForms.csproj
-Remove-Item ..\src\FortunesUIForms\tmp -recurse
-msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FortunesLegacyService  /p:OutputPath=tmp  ..\src\FortunesLegacyService\FortunesLegacyService.csproj
-Remove-Item ..\src\FortunesLegacyService\tmp -recurse
-msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FortunesServicesOwin  /p:OutputPath=tmp  ..\src\FortunesServicesOwin\FortunesServicesOwin.csproj
-Remove-Item ..\src\FortunesServicesOwin\tmp -recurse
-#msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FortunesUICore  /p:OutputPath=tmp  ..\src\FortunesUICore\FortunesUICore.csproj
-#Remove-Item ..\src\FortunesUICore\tmp -recurse
-dotnet restore ..\src\FortunesUICore\FortunesUICore.csproj -r ubuntu.14.04-x64
-dotnet publish ..\src\FortunesUICore\FortunesUICore.csproj -o ..\..\publish\FortunesUICore -r ubuntu.14.04-x64
+msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FunnyQuotesUIForms  /p:OutputPath=tmp  ..\src\FunnyQuotesUIForms\FunnyQuotesUIForms.csproj
+Remove-Item ..\src\FunnyQuotesUIForms\tmp -recurse
+msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FunnyQuotesLegacyService  /p:OutputPath=tmp  ..\src\FunnyQuotesLegacyService\FunnyQuotesLegacyService.csproj
+Remove-Item ..\src\FunnyQuotesLegacyService\tmp -recurse
+msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FunnyQuotesServicesOwin  /p:OutputPath=tmp  ..\src\FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj
+Remove-Item ..\src\FunnyQuotesServicesOwin\tmp -recurse
+#msbuild /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=..\..\publish\FunnyQuotesUICore  /p:OutputPath=tmp  ..\src\FunnyQuotesUICore\FunnyQuotesUICore.csproj
+#Remove-Item ..\src\FunnyQuotesUICore\tmp -recurse
+dotnet restore ..\src\FunnyQuotesUICore\FunnyQuotesUICore.csproj -r ubuntu.14.04-x64
+dotnet publish ..\src\FunnyQuotesUICore\FunnyQuotesUICore.csproj -o ..\..\publish\FunnyQuotesUICore -r ubuntu.14.04-x64
 
 Copy-Item manifest.yml ..\publish\manifest.yml
 Copy-Item create-services.bat ..\publish\create-services.bat

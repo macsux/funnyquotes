@@ -2,17 +2,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortunesUIForms", "FortunesUIForms\FortunesUIForms.csproj", "{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesUIForms", "FunnyQuotesUIForms\FunnyQuotesUIForms.csproj", "{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortunesCommon", "FortunesCommon\FortunesCommon.csproj", "{95A5BA31-2949-4BD7-946A-A77AD704D185}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCommon", "FunnyQuotesCommon\FunnyQuotesCommon.csproj", "{95A5BA31-2949-4BD7-946A-A77AD704D185}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortunesLegacyService", "FortunesLegacyService\FortunesLegacyService.csproj", "{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesLegacyService", "FunnyQuotesLegacyService\FunnyQuotesLegacyService.csproj", "{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortunesCookieDatabase", "FortunesCookieDatabase\FortunesCookieDatabase.csproj", "{85026D53-291D-4B8C-A7B8-37A9952267C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCookieDatabase", "FunnyQuotesCookieDatabase\FunnyQuotesCookieDatabase.csproj", "{85026D53-291D-4B8C-A7B8-37A9952267C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FortunesUICore", "FortunesUICore\FortunesUICore.csproj", "{6B5303E0-A3D1-413C-8662-17A53D9C1ED6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunnyQuotesUICore", "FunnyQuotesUICore\FunnyQuotesUICore.csproj", "{6B5303E0-A3D1-413C-8662-17A53D9C1ED6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortunesServicesOwin", "FortunesServicesOwin\FortunesServicesOwin.csproj", "{30F209AC-A83A-413C-97BF-A50E05122EC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesServicesOwin", "FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj", "{30F209AC-A83A-413C-97BF-A50E05122EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

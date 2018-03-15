@@ -244,7 +244,7 @@
                   "enabled":true,
                   "continueOnError":false,
                   "alwaysRun":false,
-                  "displayName":"FortunesFormsUI",
+                  "displayName":"FunnyQuotesFormsUI",
                   "timeoutInMinutes":0,
                   "condition":"succeeded()",
                   "refName":"VSBuild_2",
@@ -254,9 +254,9 @@
                      "definitionType":"task"
                   },
                   "inputs":{
-                     "solution":"src/FortunesFormsUI/FortunesFormsUI.csproj",
+                     "solution":"src/FunnyQuotesFormsUI/FunnyQuotesFormsUI.csproj",
                      "vsVersion":"15.0",
-                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FortunesLegacyUI  /p:OutputPath=$(Build.BinariesDirectory)\\tmp",
+                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FunnyQuotesLegacyUI  /p:OutputPath=$(Build.BinariesDirectory)\\tmp",
                      "platform":"$(BuildPlatform)",
                      "configuration":"$(BuildConfiguration)",
                      "clean":"false",
@@ -274,7 +274,7 @@
                   "enabled":true,
                   "continueOnError":false,
                   "alwaysRun":false,
-                  "displayName":"FortunesLegacyService",
+                  "displayName":"FunnyQuotesLegacyService",
                   "timeoutInMinutes":0,
                   "condition":"succeeded()",
                   "refName":"ClonedVSBuild_27",
@@ -284,9 +284,9 @@
                      "definitionType":"task"
                   },
                   "inputs":{
-                     "solution":"src/FortunesLegacyService/FortunesLegacyService.csproj",
+                     "solution":"src/FunnyQuotesLegacyService/FunnyQuotesLegacyService.csproj",
                      "vsVersion":"15.0",
-                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FortunesLegacyService  /p:OutputPath=$(Build.BinariesDirectory)\\tmp",
+                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FunnyQuotesLegacyService  /p:OutputPath=$(Build.BinariesDirectory)\\tmp",
                      "platform":"$(BuildPlatform)",
                      "configuration":"$(BuildConfiguration)",
                      "clean":"false",
@@ -304,7 +304,7 @@
                   "enabled":true,
                   "continueOnError":false,
                   "alwaysRun":false,
-                  "displayName":"FortunesService",
+                  "displayName":"FunnyQuotesService",
                   "timeoutInMinutes":0,
                   "condition":"succeeded()",
                   "refName":"ClonedClonedVSBuild_278",
@@ -314,9 +314,9 @@
                      "definitionType":"task"
                   },
                   "inputs":{
-                     "solution":"src/FortunesServicesOwin/FortunesServicesOwin.csproj",
+                     "solution":"src/FunnyQuotesServicesOwin/FunnyQuotesServicesOwin.csproj",
                      "vsVersion":"15.0",
-                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FortunesServices  /p:OutputPath=$(Build.BinariesDirectory)\\tmp ",
+                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FunnyQuotesServices  /p:OutputPath=$(Build.BinariesDirectory)\\tmp ",
                      "platform":"$(BuildPlatform)",
                      "configuration":"$(BuildConfiguration)",
                      "clean":"false",
@@ -334,7 +334,7 @@
                   "enabled":true,
                   "continueOnError":false,
                   "alwaysRun":false,
-                  "displayName":"FortunesUI",
+                  "displayName":"FunnyQuotesUI",
                   "timeoutInMinutes":0,
                   "condition":"succeeded()",
                   "refName":"ClonedClonedClonedVSBuild_2788",
@@ -344,9 +344,9 @@
                      "definitionType":"task"
                   },
                   "inputs":{
-                     "solution":"src/FortunesUI/FortunesUI.csproj",
+                     "solution":"src/FunnyQuotesUI/FunnyQuotesUI.csproj",
                      "vsVersion":"15.0",
-                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FortunesUI  /p:OutputPath=$(Build.BinariesDirectory)\\tmp ",
+                     "msbuildArgs":"/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false /p:SkipInvalidConfigurations=true /p:PublishUrl=$(build.artifactstagingdirectory)\\FunnyQuotesUI  /p:OutputPath=$(Build.BinariesDirectory)\\tmp ",
                      "platform":"$(BuildPlatform)",
                      "configuration":"$(BuildConfiguration)",
                      "clean":"false",
@@ -527,7 +527,7 @@
       "imageUrl":"https://macsux.visualstudio.com/_api/_common/identityImage?id=52d19ba7-a97c-6725-b342-7ecaf11e7dd3"
    },
    "id":1,
-   "name":"Fortunes",
+   "name":"FunnyQuotes",
    "url":"https://macsux.visualstudio.com/cd7da4c1-c884-45af-9f6a-0a2959bfd2c5/_apis/build/Definitions/1",
    "uri":"vstfs:///Build/Definition/1",
    "path":"\\",
@@ -536,7 +536,7 @@
    "createdDate":"2017-07-20T19:50:50.273Z",
    "project":{
       "id":"cd7da4c1-c884-45af-9f6a-0a2959bfd2c5",
-      "name":"fortunes",
+      "name":"FunnyQuotes",
       "url":"https://macsux.visualstudio.com/_apis/projects/cd7da4c1-c884-45af-9f6a-0a2959bfd2c5",
       "state":"wellFormed",
       "revision":16,
