@@ -1,0 +1,42 @@
+---
+applications:
+- name: FortunesUIForms
+  path: FortunesUIForms
+  random-route: true
+  memory: 512M
+  stack: windows2012R2
+  health-check-type: http
+  buildpack: hwc_buildpack
+  services:
+    - eureka
+    - config-server
+- name: FortunesLegacyService
+  path: FortunesLegacyService
+  random-route: true
+  memory: 512M
+  stack: windows2012R2
+  health-check-type: http
+  buildpack: hwc_buildpack
+  services:
+   - eureka
+   - mysql-fortunes
+- name: FortunesServicesOwin
+  path: FortunesServicesOwin
+  random-route: true
+  memory: 512M
+  stack: windows2012R2
+  health-check-type: http
+  health-check-http-endpoint: /api/fortunes/random
+  buildpack: hwc_buildpack
+  services:
+    - eureka
+    - mysql-fortunes
+- name: FortunesUICore
+  path: FortunesUICore
+  random-route: true
+  memory: 512M
+  health-check-type: http
+  health-check-http-endpoint: /
+  buildpack: dotnet_core_buildpack
+  services:
+    - eureka
