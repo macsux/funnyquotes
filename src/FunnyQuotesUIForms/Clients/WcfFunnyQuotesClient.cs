@@ -2,24 +2,42 @@
 using System.ServiceModel;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesUIForms.Clients
 {
     public class WcfFunnyQuotesClient : IFunnyQuoteService
     {
+        private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
         private readonly EndpointClientHandler _dicoveryAddressResolver;
 
-        public WcfFunnyQuotesClient(IDiscoveryClient discoveryClient)
+        public WcfFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config)
         {
+            _config = config;
             _dicoveryAddressResolver = new EndpointClientHandler(discoveryClient);
         }
 
         public async Task<string> GetCookieAsync()
         {
-            var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteserviceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteserviceWcf"));
-            return await channelFactory.CreateChannel().GetCookieAsync();
+            var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Legacy"), HystrixCommandKeyDefault.AsKey("Legacy.Wcf"));
+            var cmd = new HystrixCommand<string>(options,
+                run: GetCookieRun,
+                fallback: GetCookieFallback);
+            return await cmd.ExecuteAsync();
+
         }
+
+        public string GetCookieRun()
+        {
+            var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf"));
+            return channelFactory.CreateChannel().GetCookieAsync().Result;
+        }
+
+        public string GetCookieFallback() => _config.Value.FailedMessage;
+        
 
         public string GetCookie()
         {

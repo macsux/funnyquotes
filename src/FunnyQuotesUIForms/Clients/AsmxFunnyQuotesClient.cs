@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using FunnyQuotesUIForms.Web_References.FunnyQuotesLegacyService;
+using Microsoft.Extensions.Options;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
 
@@ -10,16 +11,18 @@ namespace FunnyQuotesUIForms.Clients
 {
     public class AsmxFunnyQuotesClient : IFunnyQuoteService
     {
+        private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
         private readonly DiscoveryHttpClientHandler _dicoveryAddressResolver;
 
-        public AsmxFunnyQuotesClient(IDiscoveryClient discoveryClient)
+        public AsmxFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config)
         {
+            _config = config;
             _dicoveryAddressResolver = new DiscoveryHttpClientHandler(discoveryClient);
         }
 
         public string GetCookie()
         {
-            var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Cookie"), HystrixCommandKeyDefault.AsKey("Cookie.Asmx"));
+            var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Legacy"), HystrixCommandKeyDefault.AsKey("Cookie.Asmx"));
             var cmd = new HystrixCommand<string>(options,
                 run: GetCookieRun,
                 fallback: GetCookieFallback);
@@ -34,10 +37,7 @@ namespace FunnyQuotesUIForms.Clients
             return client.GetCookie();
         }
 
-        private string GetCookieFallback()
-        {
-            return "Failure is not an option -- it comes bundled with Windows.";
-        }
+        public string GetCookieFallback() => _config.Value.FailedMessage;
 
         public Task<string> GetCookieAsync()
         {
