@@ -7,11 +7,11 @@ using FunnyQuotesCookieDatabase;
 
 namespace FunnyQuotesLegacyService
 {
-    public class FunnyQuoteserviceWCF : IFunnyQuoteservice
+    public class FunnyQuoteServiceWcf : IFunnyQuoteService
     {
         private readonly Func<FunnyQuotesCookieDbContext> _dbContextFactory;
 
-        public FunnyQuoteserviceWCF(Func<FunnyQuotesCookieDbContext> dbContextFactory)
+        public FunnyQuoteServiceWcf(Func<FunnyQuotesCookieDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }

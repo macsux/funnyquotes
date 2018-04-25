@@ -35,8 +35,7 @@ namespace FunnyQuotesServicesOwin
                     .AddJsonFile($"appsettings.{env}.json", true)
                     .AddEnvironmentVariables()
                     .AddCloudFoundry()
-                    .Build()
-                    .AutoRefresh(TimeSpan.FromSeconds(10));
+                    .Build();
 
                 // register DI
                 var builder = new ContainerBuilder();
@@ -64,6 +63,7 @@ namespace FunnyQuotesServicesOwin
                     "DefaultApi",
                     "api/{controller}/{action}"
                 );
+                httpConfig.Routes.MapHttpRoute("Health", "{controller}/{action}", new { controller = "health", action = "health" });
 
                 httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container);
                 appBuilder.UseWebApi(httpConfig);

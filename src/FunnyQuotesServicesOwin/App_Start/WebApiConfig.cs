@@ -16,6 +16,8 @@ namespace FunnyQuotesServicesOwin
                 "api/{controller}/{id}",
                 new {id = RouteParameter.Optional}
             );
+
+            config.Routes.MapHttpRoute("Health", "{controller}/{action}", new {controller = "health", action="health"});
         }
     }
 }

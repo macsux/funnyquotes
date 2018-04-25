@@ -1,5 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using FunnyQuotesCommon;
+using FunnyQuotesUICore.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,30 +11,26 @@ namespace FunnyQuotesUICore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly DiscoveryHttpClientHandler _handler;
+        private readonly IFunnyQuoteService _client;
 
-        public HomeController(IDiscoveryClient client, ILoggerFactory logFactory)
+        public HomeController(IFunnyQuoteService client)
         {
-            _handler = new DiscoveryHttpClientHandler(client, logFactory.CreateLogger<DiscoveryHttpClientHandler>());
+            _client = client;
         }
 
         public IActionResult Index()
         {
+            ViewBag.Provider = _client.GetType().FullName;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> FunnyQuotes()
         {
-            var data = await GetClient().GetStringAsync("http://FunnyQuotesServicesOwin/api/FunnyQuotes/random");
-            var result = JsonConvert.DeserializeObject<string>(data);
+            ViewBag.Provider = _client.GetType().FullName;
+            var result = await _client.GetCookieAsync();
             return View("Index", result);
         }
 
-        private HttpClient GetClient()
-        {
-            var client = new HttpClient(_handler, false);
-            return client;
-        }
     }
 }

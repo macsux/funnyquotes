@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Microsoft.Extensions.Logging;
+using Pivotal.Extensions.Configuration.ConfigServer;
+using Steeltoe.Extensions.Logging;
 
 namespace FunnyQuotesUICore
 {
@@ -14,9 +16,14 @@ namespace FunnyQuotesUICore
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .AddCloudFoundry()
                 .UseCloudFoundryHosting()
+                .AddConfigServer()
                 .UseStartup<Startup>()
+                .ConfigureLogging((builderContext, loggingBuilder) =>
+                {
+                    loggingBuilder.AddConfiguration(builderContext.Configuration.GetSection("Logging"));
+                    loggingBuilder.AddDynamicConsole();
+                })
                 .Build();
         }
     }

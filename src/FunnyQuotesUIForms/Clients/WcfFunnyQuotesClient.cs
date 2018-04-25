@@ -6,7 +6,7 @@ using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesUIForms.Clients
 {
-    public class WcfFunnyQuotesClient : IFunnyQuoteservice
+    public class WcfFunnyQuotesClient : IFunnyQuoteService
     {
         private readonly EndpointClientHandler _dicoveryAddressResolver;
 
@@ -17,7 +17,7 @@ namespace FunnyQuotesUIForms.Clients
 
         public async Task<string> GetCookieAsync()
         {
-            var channelFactory = new ChannelFactory<IFunnyQuoteservice>("FunnyQuoteserviceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteserviceWcf"));
+            var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteserviceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteserviceWcf"));
             return await channelFactory.CreateChannel().GetCookieAsync();
         }
 

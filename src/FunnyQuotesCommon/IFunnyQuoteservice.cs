@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace FunnyQuotesCommon
 {
     [ServiceContract]
-    public interface IFunnyQuoteservice
+    public interface IFunnyQuoteService
     {
         [OperationContract]
         string GetCookie();

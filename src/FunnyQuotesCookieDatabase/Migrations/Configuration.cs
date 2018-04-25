@@ -14,7 +14,7 @@ namespace FunnyQuotesCookieDatabase.Migrations
         protected override void Seed(FunnyQuotesCookieDbContext context)
         {
             if (!context.FunnyQuotes.Any())
-                foreach (var cookie in LocalFunnyQuoteservice.Cookies)
+                foreach (var cookie in LocalFunnyQuoteService.Cookies)
                     context.FunnyQuotes.AddOrUpdate(x => x.Cookie, new FunnyQuote {Cookie = cookie, Language = "en"});
         }
     }

@@ -6,17 +6,17 @@ namespace FunnyQuotesUIForms
 {
     public partial class Cookies : Page
     {
-        public IFunnyQuoteservice FunnyQuoteservice { get; set; }
+        public IFunnyQuoteService FunnyQuoteService { get; set; }
 
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            lblCookieProvider.Text = FunnyQuoteservice.GetType().ToString();
+            lblCookieProvider.Text = FunnyQuoteService.GetType().ToString();
         }
 
         protected async void btnGetCookie_OnClick(object sender, EventArgs e)
         {
-            lblCookie.Text = await FunnyQuoteservice.GetCookieAsync();
+            lblCookie.Text = await FunnyQuoteService.GetCookieAsync();
         }
 
         protected void btnKill_OnClick(object sender, EventArgs e)

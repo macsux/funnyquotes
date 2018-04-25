@@ -29,23 +29,18 @@ namespace FunnyQuotesLegacyService
         private void Application_Start(object sender, EventArgs e)
         {
             var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false, false)
-                .AddJsonFile($"appsettings.{env}.json", true)
-                .AddEnvironmentVariables()
-                .AddCloudFoundry()
-                .Build();
+            ApplicationConfig.RegisterConfig(env);
             var builder = new ContainerBuilder();
             builder.RegisterOptions();
-            builder.RegisterDiscoveryClient(config);
-            builder.RegisterLogging(config);
-            builder.RegisterMySqlConnection(config);
+            builder.RegisterDiscoveryClient(ApplicationConfig.Configuration);
+            builder.RegisterConsoleLogging();
+            builder.RegisterMySqlConnection(ApplicationConfig.Configuration);
             builder.Register(ctx =>
             {
                 var connString = ctx.Resolve<IDbConnection>().ConnectionString;
                 return new FunnyQuotesCookieDbContext(connString);
             });
-            builder.RegisterType<FunnyQuoteserviceWCF>();
+            builder.RegisterType<FunnyQuoteServiceWcf>();
             var container = builder.Build();
 
             // ensure that discovery client component starts up

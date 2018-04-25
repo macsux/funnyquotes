@@ -1,32 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-@model string
+﻿@model string
 
-@section Scripts {
-    <script>
-        var serviceUrl = "@ViewBag.ServiceUrl";
-        $("#btnFunnyQuotes").click(function() {
-            $.ajax(serviceUrl + "api/FunnyQuotes/random")
-                .success(function(result) {
-                    $("#FunnyQuotes").html(result);
-                });
-        });
+<form asp-controller="Home" asp-action="FunnyQuotes" method="post">
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="panel">
+                <h3>@Model</h3>
+                <hr/>
+                <b>Provider: </b>@ViewBag.Provider
+            </div>
+        </div>
 
-    </script>
-}
-
-<br/>
-<table style="width: 50%;">
-    <tr style="border: 3px double blue; height: 300px;">
-        <td id="FunnyQuotes" colspan="2">@Model</td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <form asp-controller="Home" asp-action="FunnyQuotes" method="post">
-                <button type="submit">Show me FunnyQuotes</button>
-            </form>
-            @*                <button id="btnFunnyQuotes">Show me FunnyQuotes</button>*@
-        </td>
-    </tr>
-</table>
+        <div class="row">
+            <div class="large-12 columns">
+                <button type="submit">Show me Funny Quote</button>
+            </div>
+        </div>
+    </div>
+</form>

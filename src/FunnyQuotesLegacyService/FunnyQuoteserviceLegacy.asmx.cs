@@ -19,7 +19,7 @@ namespace FunnyQuotesLegacyService
         [WebMethod]
         public string GetCookie()
         {
-//            return new LocalFunnyQuoteservice().GetCookie();
+//            return new LocalFunnyQuoteService().GetCookie();
             var connection = Global.DatabaseFactory() as MySqlConnection;
 
             var adapter = new MySqlDataAdapter("select * from FunnyQuotes", connection);

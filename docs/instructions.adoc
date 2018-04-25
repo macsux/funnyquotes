@@ -1,0 +1,23 @@
+== Funny Quotes
+
+=== Requirements 
+. CF CLI
+. Visual Studio 2017
+
+=== Instructions
+
+We going to start by showing how can work with some old legacy apps, and see what it would take to run them on to the platform. It contains the kind of code you can find in .NET 1.0 days - WebForms application running on IIS.
+
+Presenter options:
+
+. In visual studio, compile the solution, publish FunnyQuotesUI to a folder profile, and then push the output
+. Alternatively use compiled artifacts from `deploy` folder.
+
+---
+. Switch terminal into `publish\FunnyQuotesUIForms` folder
+. `> cf push FunnyQuotesUIForms`
+. 
+
+
+
+

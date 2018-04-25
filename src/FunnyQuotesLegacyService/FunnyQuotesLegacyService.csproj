@@ -144,8 +144,8 @@
     <Reference Include="Steeltoe.Discovery.EurekaBase, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Steeltoe.Discovery.EurekaBase.2.0.1\lib\netstandard2.0\Steeltoe.Discovery.EurekaBase.dll</HintPath>
     </Reference>
-    <Reference Include="Steeltoe.Extensions.Configuration.CloudFoundryBase, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Steeltoe.Extensions.Configuration.CloudFoundryBase.2.0.0\lib\netstandard2.0\Steeltoe.Extensions.Configuration.CloudFoundryBase.dll</HintPath>
+    <Reference Include="Steeltoe.Extensions.Configuration.CloudFoundryBase, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Steeltoe.Extensions.Configuration.CloudFoundryBase.2.0.1\lib\netstandard2.0\Steeltoe.Extensions.Configuration.CloudFoundryBase.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -226,6 +226,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationConfig.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

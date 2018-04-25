@@ -8,7 +8,7 @@ using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesUIForms.Clients
 {
-    public class RestFunnyQuotesClient : IFunnyQuoteservice
+    public class RestFunnyQuotesClient : IFunnyQuoteService
     {
         private const string RANDOM_FunnyQuotes_URL = "http://FunnyQuotesServicesOwin/api/FunnyQuotes/random";
         private readonly DiscoveryHttpClientHandler _handler;

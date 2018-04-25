@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace FunnyQuotesCommon
 {
-    public class LocalFunnyQuoteservice : IFunnyQuoteservice
+    public class LocalFunnyQuoteService : IFunnyQuoteService
     {
         public static readonly string[] Cookies =
         {

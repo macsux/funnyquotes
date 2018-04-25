@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
@@ -20,13 +20,13 @@
   <wsdl:message name="GetCookieSoapOut">
     <wsdl:part name="parameters" element="tns:GetCookieResponse" />
   </wsdl:message>
-  <wsdl:portType name="FunnyQuoteserviceLegacySoap">
+  <wsdl:portType name="FunnyQuoteServiceLegacySoap">
     <wsdl:operation name="GetCookie">
       <wsdl:input message="tns:GetCookieSoapIn" />
       <wsdl:output message="tns:GetCookieSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="FunnyQuoteserviceLegacySoap" type="tns:FunnyQuoteserviceLegacySoap">
+  <wsdl:binding name="FunnyQuoteServiceLegacySoap" type="tns:FunnyQuoteServiceLegacySoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetCookie">
       <soap:operation soapAction="http://tempuri.org/GetCookie" style="document" />
@@ -38,7 +38,7 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:binding name="FunnyQuoteserviceLegacySoap12" type="tns:FunnyQuoteserviceLegacySoap">
+  <wsdl:binding name="FunnyQuoteServiceLegacySoap12" type="tns:FunnyQuoteServiceLegacySoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetCookie">
       <soap12:operation soapAction="http://tempuri.org/GetCookie" style="document" />
@@ -50,12 +50,12 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="FunnyQuoteserviceLegacy">
-    <wsdl:port name="FunnyQuoteserviceLegacySoap" binding="tns:FunnyQuoteserviceLegacySoap">
-      <soap:address location="http://localhost:55483/FunnyQuoteserviceLegacy.asmx" />
+  <wsdl:service name="FunnyQuoteServiceLegacy">
+    <wsdl:port name="FunnyQuoteServiceLegacySoap" binding="tns:FunnyQuoteServiceLegacySoap">
+      <soap:address location="http://localhost:55483/FunnyQuoteServiceLegacy.asmx" />
     </wsdl:port>
-    <wsdl:port name="FunnyQuoteserviceLegacySoap12" binding="tns:FunnyQuoteserviceLegacySoap12">
-      <soap12:address location="http://localhost:55483/FunnyQuoteserviceLegacy.asmx" />
+    <wsdl:port name="FunnyQuoteServiceLegacySoap12" binding="tns:FunnyQuoteServiceLegacySoap12">
+      <soap12:address location="http://localhost:55483/FunnyQuoteServiceLegacy.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pivotal.Discovery.Client;
 using Pivotal.Extensions.Configuration.ConfigServer;
+using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 
@@ -44,30 +45,23 @@ namespace FunnyQuotesUIForms
             builder.RegisterDiscoveryClient(config);
             builder.RegisterLogging(config);
             builder.RegisterConsoleLogging();
+            builder.RegisterHystrixMetricsStream(config);
             // used for wcf integration
 
-            builder.RegisterType<AsmxFunnyQuotesClient>().Named<IFunnyQuoteservice>("asmx");
-            builder.RegisterType<WcfFunnyQuotesClient>().Named<IFunnyQuoteservice>("wcf");
-            builder.RegisterType<LocalFunnyQuoteservice>().Named<IFunnyQuoteservice>("local");
-            builder.RegisterType<RestFunnyQuotesClient>().Named<IFunnyQuoteservice>("rest");
+            builder.RegisterType<AsmxFunnyQuotesClient>().Named<IFunnyQuoteService>("asmx");
+            builder.RegisterType<WcfFunnyQuotesClient>().Named<IFunnyQuoteService>("wcf");
+            builder.RegisterType<LocalFunnyQuoteService>().Named<IFunnyQuoteService>("local");
+            builder.RegisterType<RestFunnyQuotesClient>().Named<IFunnyQuoteService>("rest");
             // register service factory
             builder.Register(c =>
             {
-                var localContext = c.Resolve<IComponentContext>();
-                var FunnyQuotesConfig = c.Resolve<IOptionsSnapshot<FunnyQuotesConfiguration>>();
-                Func<IFunnyQuoteservice> clientFactory = () => localContext.ResolveNamed<IFunnyQuoteservice>(FunnyQuotesConfig.Value.ClientType);
-                return clientFactory;
+                var quotesConfig = c.Resolve<IOptionsSnapshot<FunnyQuotesConfiguration>>();
+                return c.ResolveNamed<IFunnyQuoteService>(quotesConfig.Value.ClientType);
             });
-            // register cookie service (to be resolved out of factory above)
-            builder.Register(c =>
-            {
-                var localContext = c;
-                return localContext.Resolve<Func<IFunnyQuoteservice>>()();
-            });
+            
             var container = builder.Build();
-            // ensure that discovery client component starts up
-//            container.Resolve<IDiscoveryClient>();
             container.StartDiscoveryClient();
+            container.StartHystrixMetricsStream();
             _containerProvider = new ContainerProvider(container);
             Console.WriteLine(">> FunnyQuotesLegacyUI Started<<");
         }
