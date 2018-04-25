@@ -36,7 +36,7 @@ namespace FunnyQuotesUICore
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<LocalFunnyQuoteService>();
-            services.AddSingleton<RestFunnyQuotesClient>();
+            services.AddScoped<RestFunnyQuotesClient>();
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes"));
 
@@ -67,7 +67,7 @@ namespace FunnyQuotesUICore
             app.UseStaticFiles();
             
             app.UseCloudFoundryActuators();
-            
+            app.UseHystrixRequestContext();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -77,9 +77,6 @@ namespace FunnyQuotesUICore
             app.UseHystrixMetricsStream();
             app.UseDiscoveryClient();
         }
-        public class FunnyQuotesConfiguration
-        {
-            public string ClientType { get; set; }
-        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Pivotal.Extensions.Configuration.ConfigServer;
@@ -17,6 +18,7 @@ namespace FunnyQuotesUICore
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseCloudFoundryHosting()
+                .ConfigureAppConfiguration((context, builder) => Console.WriteLine("test"))
                 .AddConfigServer()
                 .UseStartup<Startup>()
                 .ConfigureLogging((builderContext, loggingBuilder) =>
