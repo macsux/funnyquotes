@@ -39,7 +39,6 @@ namespace FunnyQuotesUICore.Clients
                 run: GetCookieRun,
                 fallback: GetCookieFallback);
             return await cmd.ExecuteAsync();
-
         }
 
         public string GetCookieRun()
@@ -52,8 +51,6 @@ namespace FunnyQuotesUICore.Clients
         }
 
         public string GetCookieFallback() => _config.Value.FailedMessage;
-
-
 
         private HttpClient GetClient()
         {

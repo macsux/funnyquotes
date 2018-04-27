@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,9 @@ namespace FunnyQuotesUICore
     {
         public static void Main(string[] args)
         {
+//            var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
+//            Environment.SetEnvironmentVariable("VCAP_SERVICES", vcap);
+
             BuildWebHost(args).Run();
         }
 

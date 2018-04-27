@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointClientHandler.cs" />
+    <Compile Include="FunnyQuotesConfiguration.cs" />
     <Compile Include="IFunnyQuoteservice.cs" />
     <Compile Include="LocalFunnyQuoteservice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Linq;
 using FunnyQuotesCommon;
+using FunnyQuotesServicesOwin.Authentication;
 using FunnyQuotesUICore.Clients;
+using FunnyQuotesUICore.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +17,7 @@ using Pivotal.Discovery.Client;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Management.CloudFoundry;
 using Steeltoe.Management.Endpoint.Health;
+using Steeltoe.Security.Authentication.CloudFoundry;
 
 namespace FunnyQuotesUICore
 {
@@ -28,6 +34,8 @@ namespace FunnyQuotesUICore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var funnyquotesConfig = new FunnyQuotesConfiguration();
+            Configuration.GetSection("FunnyQuotes").Bind(funnyquotesConfig);
             ((IConfigurationRoot)Configuration).AutoRefresh(TimeSpan.FromSeconds(10));
             services.AddMvc();
             services.AddCloudFoundryActuators(Configuration);
@@ -39,7 +47,7 @@ namespace FunnyQuotesUICore
             services.AddScoped<RestFunnyQuotesClient>();
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes"));
-
+            
             services.AddTransient<IFunnyQuoteService>(provider =>
             {
                 var config = provider.GetService<IOptionsSnapshot<FunnyQuotesConfiguration>>();
@@ -49,6 +57,34 @@ namespace FunnyQuotesUICore
                 return provider.GetService<LocalFunnyQuoteService>();
 
             });
+
+
+            var authBuilder = services
+                .AddAuthentication((options) =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CloudFoundryDefaults.AuthenticationScheme;
+
+                })
+                .AddCookie((options) => { options.AccessDeniedPath = new PathString("/Home/AccessDenied"); });
+                
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("testgroup", policy => policy.RequireClaim("scope","openid"));
+            
+            });
+            if (funnyquotesConfig.EnableSecurity)
+            {
+                authBuilder.AddCloudFoundryOAuth(Configuration);
+            }
+            else
+            {
+                authBuilder.AddNoSecurity();
+                services.NoAuthorization();
+
+            }
+
+            //                .AddCloudFoundryOAuth(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,7 +101,7 @@ namespace FunnyQuotesUICore
             }
 
             app.UseStaticFiles();
-            
+            app.UseAuthentication();
             app.UseCloudFoundryActuators();
             app.UseHystrixRequestContext();
             app.UseMvc(routes =>

@@ -12,6 +12,7 @@
     <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="2.0.0" />
     <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="2.0.0" />
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="2.0.1" />
+    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryCore" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FunnyQuotesCommon\FunnyQuotesCommon.csproj" />
+    <ProjectReference Include="..\FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,6 +8,7 @@ using FunnyQuotesCookieDatabase;
 
 namespace FunnyQuotesServicesOwin.Controllers
 {
+    [Authorize]
     public class FunnyQuotesController : ApiController
     {
         private readonly Func<FunnyQuotesCookieDbContext> _contextFactory;
@@ -15,6 +16,7 @@ namespace FunnyQuotesServicesOwin.Controllers
         // GET api/values 
         public FunnyQuotesController(Func<FunnyQuotesCookieDbContext> contextFactory)
         {
+            
             _contextFactory = contextFactory;
         }
 
