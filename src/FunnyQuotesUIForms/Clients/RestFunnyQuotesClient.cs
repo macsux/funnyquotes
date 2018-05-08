@@ -18,7 +18,7 @@ namespace FunnyQuotesUIForms.Clients
             _handler = new DiscoveryHttpClientHandler(client);
         }
 
-        public async Task<string> GetCookieAsync()
+        public async Task<string> GetQuoteAsync()
         {
             var client = GetClient();
 
@@ -27,7 +27,7 @@ namespace FunnyQuotesUIForms.Clients
             return FunnyQuotes;
         }
 
-        public string GetCookie()
+        public string GetQuote()
         {
             throw new NotImplementedException();
         }

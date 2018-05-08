@@ -100,12 +100,12 @@ namespace FunnyQuotesCommon
             "Computer language design is just like a stroll in the park. Jurassic Park, that is."
         };
 
-        public Task<string> GetCookieAsync()
+        public Task<string> GetQuoteAsync()
         {
-            return Task.FromResult(GetCookie());
+            return Task.FromResult(GetQuote());
         }
 
-        public string GetCookie()
+        public string GetQuote()
         {
             return Cookies[new Random().Next(0, Cookies.Length - 1)];
         }

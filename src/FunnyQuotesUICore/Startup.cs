@@ -62,9 +62,8 @@ namespace FunnyQuotesUICore
             var authBuilder = services
                 .AddAuthentication((options) =>
                 {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultScheme = CloudFoundryDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = CloudFoundryDefaults.AuthenticationScheme;
-
                 })
                 .AddCookie((options) => { options.AccessDeniedPath = new PathString("/Home/AccessDenied"); });
                 

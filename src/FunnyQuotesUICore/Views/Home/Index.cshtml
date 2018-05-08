@@ -1,19 +1,17 @@
 ﻿@model string
-
-<form asp-controller="Home" asp-action="FunnyQuotes" method="post">
-    <div class="row">
-        <div class="large-12 columns">
-            <div class="panel">
-                <h3>@Model</h3>
-                <hr/>
-                <b>Provider: </b>@ViewBag.Provider
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 columns">
-                <button type="submit">Show me Funny Quote</button>
-            </div>
+<div class="row">
+    <div class="large-12">
+        <div class="panel">
+            <h3>@Model</h3>
+            <hr/>
+            <b>Provider: </b>@ViewBag.Provider
         </div>
     </div>
-</form>
+</div>
+<div class="row">
+    <div class="large-12 columns">
+        <a class="button" asp-controller="Home" asp-action="GetQuote">Show me Funny Quote</a>
+        
+    
+    </div>
+</div>

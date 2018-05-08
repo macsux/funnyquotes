@@ -39,7 +39,7 @@ namespace FunnyQuotesServicesOwin.Authentication
                 return new List<SecurityKey> { resolved };
             }
 
-            JsonWebKeySet keyset = Task.Run(() => FetchKeySet()).Result;
+            JsonWebKeySet keyset = Task.Run(() => FetchKeySet()).GetAwaiter().GetResult();
             if (keyset != null)
             {
                 foreach (JsonWebKey key in keyset.Keys)

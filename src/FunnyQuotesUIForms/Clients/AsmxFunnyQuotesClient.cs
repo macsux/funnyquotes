@@ -20,7 +20,7 @@ namespace FunnyQuotesUIForms.Clients
             _dicoveryAddressResolver = new DiscoveryHttpClientHandler(discoveryClient);
         }
 
-        public string GetCookie()
+        public string GetQuote()
         {
             var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Legacy"), HystrixCommandKeyDefault.AsKey("Cookie.Asmx"));
             var cmd = new HystrixCommand<string>(options,
@@ -39,9 +39,9 @@ namespace FunnyQuotesUIForms.Clients
 
         public string GetCookieFallback() => _config.Value.FailedMessage;
 
-        public Task<string> GetCookieAsync()
+        public Task<string> GetQuoteAsync()
         {
-            return Task.Run(() => GetCookie());
+            return Task.Run(() => GetQuote());
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿
+﻿@using Microsoft.Extensions.Options
+@using FunnyQuotesCommon
+@inject IOptionsSnapshot<FunnyQuotesConfiguration> Config
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -20,13 +22,26 @@
                 </h1>
             </li>
         </ul>
+        @if (Config.Value.EnableSecurity)
+        {
+            <div class="right">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Home" asp-action="Login" class="button">Login</a>
+                }
+                else
+                {
+                    <a asp-controller="Home" asp-action="LogOff" class="button">Logoff</a>
+                }
+            </div>
+        }
     </nav>
-    <div class="row">
-        <div class="large-12 columns">
-            <h3>Welcome to Pivotal CF - With .NET CORE</h3>
-            <hr />
-        </div>
-
+<div class="row">
+    <div class="large-12" columns>
+        <h3>Welcome to Pivotal CF - With .NET CORE</h3>
+        <hr />
+    </div>
+</div>
 
         <div class="container body-content">
             @RenderBody()
@@ -39,6 +54,6 @@
         </script>
 
 
-    </div>
+@*    </div>*@
 </body>
 </html>

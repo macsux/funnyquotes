@@ -12,8 +12,8 @@ namespace FunnyQuotesUICore
     {
         public static void Main(string[] args)
         {
-//            var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
-//            Environment.SetEnvironmentVariable("VCAP_SERVICES", vcap);
+            var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
+            Environment.SetEnvironmentVariable("VCAP_SERVICES", vcap);
 
             BuildWebHost(args).Run();
         }

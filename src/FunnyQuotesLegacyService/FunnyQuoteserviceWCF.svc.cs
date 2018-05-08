@@ -18,7 +18,7 @@ namespace FunnyQuotesLegacyService
 
         public FunnyQuotesCookieDbContext DbContext { get; set; }
 
-        public async Task<string> GetCookieAsync()
+        public async Task<string> GetQuoteAsync()
         {
             var context = _dbContextFactory();
             var cookies = await context.FunnyQuotes.Select(x => x.Cookie).ToListAsync();
@@ -26,7 +26,7 @@ namespace FunnyQuotesLegacyService
             return cookies[randomCookieIndex];
         }
 
-        public string GetCookie()
+        public string GetQuote()
         {
             var context = _dbContextFactory();
             var cookies = context.FunnyQuotes.Select(x => x.Cookie).ToList();

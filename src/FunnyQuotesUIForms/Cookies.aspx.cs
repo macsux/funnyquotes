@@ -16,7 +16,7 @@ namespace FunnyQuotesUIForms
 
         protected async void btnGetCookie_OnClick(object sender, EventArgs e)
         {
-            lblCookie.Text = await FunnyQuoteService.GetCookieAsync();
+            lblCookie.Text = await FunnyQuoteService.GetQuoteAsync();
         }
 
         protected void btnKill_OnClick(object sender, EventArgs e)

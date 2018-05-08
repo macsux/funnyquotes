@@ -7,9 +7,9 @@ namespace FunnyQuotesCommon
     public interface IFunnyQuoteService
     {
         [OperationContract]
-        string GetCookie();
+        string GetQuote();
 
-        [OperationContract(Name = "GetCookie2")] //wcf doesn't like when methods end with "Async"
-        Task<string> GetCookieAsync();
+        [OperationContract(Name = "GetQuote2")] //wcf doesn't like when methods end with "Async"
+        Task<string> GetQuoteAsync();
     }
 }

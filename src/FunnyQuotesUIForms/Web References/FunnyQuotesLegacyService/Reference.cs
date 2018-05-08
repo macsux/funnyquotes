@@ -71,9 +71,9 @@ namespace FunnyQuotesUIForms.Web_References.FunnyQuotesLegacyService {
         public event GetCookieCompletedEventHandler GetCookieCompleted;
         
         /// <remarks/>
-        [SoapDocumentMethod("http://tempuri.org/GetCookie", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [SoapDocumentMethod("http://tempuri.org/GetQuote", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string GetCookie() {
-            object[] results = this.Invoke("GetCookie", new object[0]);
+            object[] results = this.Invoke("GetQuote", new object[0]);
             return ((string)(results[0]));
         }
         
@@ -87,7 +87,7 @@ namespace FunnyQuotesUIForms.Web_References.FunnyQuotesLegacyService {
             if ((this.GetCookieOperationCompleted == null)) {
                 this.GetCookieOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCookieOperationCompleted);
             }
-            this.InvokeAsync("GetCookie", new object[0], this.GetCookieOperationCompleted, userState);
+            this.InvokeAsync("GetQuote", new object[0], this.GetCookieOperationCompleted, userState);
         }
         
         private void OnGetCookieOperationCompleted(object arg) {

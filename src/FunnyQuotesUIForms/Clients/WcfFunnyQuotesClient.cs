@@ -20,7 +20,7 @@ namespace FunnyQuotesUIForms.Clients
             _dicoveryAddressResolver = new EndpointClientHandler(discoveryClient);
         }
 
-        public async Task<string> GetCookieAsync()
+        public async Task<string> GetQuoteAsync()
         {
             var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Legacy"), HystrixCommandKeyDefault.AsKey("Legacy.Wcf"));
             var cmd = new HystrixCommand<string>(options,
@@ -33,13 +33,13 @@ namespace FunnyQuotesUIForms.Clients
         public string GetCookieRun()
         {
             var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf"));
-            return channelFactory.CreateChannel().GetCookieAsync().Result;
+            return channelFactory.CreateChannel().GetQuoteAsync().Result;
         }
 
         public string GetCookieFallback() => _config.Value.FailedMessage;
         
 
-        public string GetCookie()
+        public string GetQuote()
         {
             throw new NotImplementedException();
         }

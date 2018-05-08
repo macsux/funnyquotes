@@ -19,48 +19,40 @@ namespace FunnyQuotesUICore.Controllers
         {
             _client = client;
         }
-//        [Authorize]
-//        [Authorize(Policy = "testgroup")]
         public IActionResult Index()
         {
             ViewBag.Provider = _client.GetType().FullName;
             return View();
         }
 
-        [HttpPost]
         [Authorize]
 //        [Authorize(Policy = "testgroup")]
-        public async Task<IActionResult> FunnyQuotes()
+        public async Task<IActionResult> GetQuote()
         {
             ViewBag.Provider = _client.GetType().FullName;
-            var result = await _client.GetCookieAsync();
+            var result = await _client.GetQuoteAsync();
+            
             return View("Index", result);
         }
-        [HttpPost]
-        public async Task<IActionResult> LogOff()
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-
 
         [HttpGet]
         [Authorize]
         public IActionResult Login()
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(Index), "Home");
         }
 
-//        public IActionResult Manage()
-//        {
-//            ViewData["Message"] = "Manage accounts using UAA or CF command line.";
-//            return View();
-//        }
-//
-//        public IActionResult AccessDenied()
-//        {
-//            ViewData["Message"] = "Insufficient permissions.";
-//            return View();
-//        }
+//        [HttpPost]
+        public async Task<IActionResult> LogOff()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction(nameof(Index), "Home");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            ViewData["Message"] = "Insufficient permissions.";
+            return View();
+        }
     }
 }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -24,15 +27,16 @@ namespace FunnyQuotesUICore.Clients
             _httpContextAccessor = httpContextAccessor;
             _config = config;
             _handler = new DiscoveryHttpClientHandler(client);
+            
         }
 
 
-        public string GetCookie()
+        public string GetQuote()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetCookieAsync()
+        public async Task<string> GetQuoteAsync()
         {
             var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Core.RandomQuote"), HystrixCommandKeyDefault.AsKey("Core.RandomQuote"));
             var cmd = new HystrixCommand<string>(options,
@@ -43,7 +47,7 @@ namespace FunnyQuotesUICore.Clients
 
         public string GetCookieRun()
         {
-            var client = GetClient();
+            var client = GetClient().Result;
 
             var json = client.GetStringAsync(RANDOM_FunnyQuotes_URL).Result;
             var funnyQuote = JsonConvert.DeserializeObject<string>(json);
@@ -52,11 +56,17 @@ namespace FunnyQuotesUICore.Clients
 
         public string GetCookieFallback() => _config.Value.FailedMessage;
 
-        private HttpClient GetClient()
+        private async Task<HttpClient> GetClient()
         {
             var client = new HttpClient(_handler, false);
             // distributed tracing headers
-            
+            if(_config.Value.EnableSecurity)
+            { 
+                var token = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+                if (token != null)
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+
+            }
             var traceId = _httpContextAccessor.HttpContext.Request.Headers["X-B3-TraceId"].FirstOrDefault();
             if (traceId != null)
             {
