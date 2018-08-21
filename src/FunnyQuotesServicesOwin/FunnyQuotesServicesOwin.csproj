@@ -412,6 +412,7 @@
     </Content>
     <None Include="packages.config" />
     <Content Include="vcap.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FunnyQuotesCommon\FunnyQuotesCommon.csproj">

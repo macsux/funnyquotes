@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using FunnyQuotesUICore.Clients;
@@ -26,13 +27,23 @@ namespace FunnyQuotesUICore.Controllers
         }
 
         [Authorize]
-//        [Authorize(Policy = "testgroup")]
+        [Authorize(Policy = "useridentity")]
         public async Task<IActionResult> GetQuote()
         {
-            ViewBag.Provider = _client.GetType().FullName;
-            var result = await _client.GetQuoteAsync();
+            try
+            {
+
             
-            return View("Index", result);
+                ViewBag.Provider = _client.GetType().FullName;
+                var result = await _client.GetQuoteAsync();
+                
+                return View("Index", result);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+                throw;
+            }
         }
 
         [HttpGet]

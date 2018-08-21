@@ -20,7 +20,7 @@ applications:
   buildpack: hwc_buildpack
   services:
    - eureka
-   - mysql-FunnyQuotes
+   - mysql-funnyquotes
 - name: FunnyQuotesServicesOwin
   path: FunnyQuotesServicesOwin
   random-route: true
@@ -31,7 +31,7 @@ applications:
   buildpack: hwc_buildpack
   services:
     - eureka
-    - mysql-FunnyQuotes
+    - mysql-funnyquotes
 - name: FunnyQuotesUICore
   path: FunnyQuotesUICore
   random-route: true
@@ -43,3 +43,8 @@ applications:
     - eureka
     - hystrix
     - config-server
+    - sso
+  env:
+    SSO_IDENTITY_PROVIDERS: uaa, gcp
+    SSO_REDIRECT_URIS: https://FULL-FunnyQuotesUICore-URL/signin-cloudfoundry
+

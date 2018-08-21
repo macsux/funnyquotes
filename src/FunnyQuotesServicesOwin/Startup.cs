@@ -31,8 +31,8 @@ namespace FunnyQuotesServicesOwin
         {
             try
             {
-                var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
-                Environment.SetEnvironmentVariable("VCAP_SERVICES",vcap);
+//                var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
+//                Environment.SetEnvironmentVariable("VCAP_SERVICES",vcap);
                 var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
                 var config = new ConfigurationBuilder()
                     //                configBuilder.SetBasePath(env.ContentRootPath)

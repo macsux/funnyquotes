@@ -278,6 +278,7 @@
     <Content Include="js\vendor\jquery.js" />
     <Content Include="js\vendor\placeholder.js" />
     <Content Include="Pivotal.Master" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

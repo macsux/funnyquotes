@@ -47,11 +47,20 @@ namespace FunnyQuotesUICore.Clients
 
         public string GetCookieRun()
         {
-            var client = GetClient().Result;
+            try
+            {
+                var client = GetClient().Result;
 
-            var json = client.GetStringAsync(RANDOM_FunnyQuotes_URL).Result;
-            var funnyQuote = JsonConvert.DeserializeObject<string>(json);
-            return funnyQuote;
+                var json = client.GetStringAsync(RANDOM_FunnyQuotes_URL).Result;
+                var funnyQuote = JsonConvert.DeserializeObject<string>(json);
+                return funnyQuote;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+                throw;
+            }
+
         }
 
         public string GetCookieFallback() => _config.Value.FailedMessage;

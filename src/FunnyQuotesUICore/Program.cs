@@ -12,9 +12,6 @@ namespace FunnyQuotesUICore
     {
         public static void Main(string[] args)
         {
-            var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
-            Environment.SetEnvironmentVariable("VCAP_SERVICES", vcap);
-
             BuildWebHost(args).Run();
         }
 
@@ -22,7 +19,6 @@ namespace FunnyQuotesUICore
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseCloudFoundryHosting()
-                .ConfigureAppConfiguration((context, builder) => Console.WriteLine("test"))
                 .AddConfigServer()
                 .UseStartup<Startup>()
                 .ConfigureLogging((builderContext, loggingBuilder) =>

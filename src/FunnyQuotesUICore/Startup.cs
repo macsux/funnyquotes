@@ -69,7 +69,7 @@ namespace FunnyQuotesUICore
                 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("testgroup", policy => policy.RequireClaim("scope","openid"));
+                options.AddPolicy("useridentity", policy => policy.RequireClaim("scope","openid"));
             
             });
             if (funnyquotesConfig.EnableSecurity)
