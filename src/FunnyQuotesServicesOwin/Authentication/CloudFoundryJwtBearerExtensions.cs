@@ -9,6 +9,7 @@ using Steeltoe.Security.Authentication.CloudFoundry;
 
 namespace FunnyQuotesServicesOwin.Authentication
 {
+    // this is same implementation found in SteelToe for asp.net core. in future will be made as an extension to SteelToe to support Owin
     public static class CloudFoundryJwtBearerExtensions
     {
         public static void AddCloudFoundryJwtBearer(this IAppBuilder app, IConfiguration config)

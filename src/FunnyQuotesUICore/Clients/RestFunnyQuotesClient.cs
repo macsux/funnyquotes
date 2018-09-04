@@ -8,6 +8,7 @@ using FunnyQuotesCommon;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Steeltoe.CircuitBreaker.Hystrix;
@@ -17,17 +18,10 @@ namespace FunnyQuotesUICore.Clients
 {
     public class RestFunnyQuotesClient : IFunnyQuoteService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
-        private const string RANDOM_FunnyQuotes_URL = "http://FunnyQuotesServicesOwin/api/FunnyQuotes/random";
-        private readonly DiscoveryHttpClientHandler _handler;
-
-        public RestFunnyQuotesClient(IHttpContextAccessor httpContextAccessor, IDiscoveryClient client, IOptionsSnapshot<FunnyQuotesConfiguration> config)
+        private readonly GetQuoteCommand _getQuoteCommand;
+        public RestFunnyQuotesClient(GetQuoteCommand getQuoteCommand)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _config = config;
-            _handler = new DiscoveryHttpClientHandler(client);
-            
+            _getQuoteCommand = getQuoteCommand;
         }
 
 
@@ -38,53 +32,71 @@ namespace FunnyQuotesUICore.Clients
 
         public async Task<string> GetQuoteAsync()
         {
-            var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Core.RandomQuote"), HystrixCommandKeyDefault.AsKey("Core.RandomQuote"));
-            var cmd = new HystrixCommand<string>(options,
-                run: GetCookieRun,
-                fallback: GetCookieFallback);
+            var cmd = _getQuoteCommand;
             return await cmd.ExecuteAsync();
         }
 
-        public string GetCookieRun()
+
+        public class GetQuoteCommand : HystrixCommand<string>
         {
-            try
+            private readonly HttpClient _httpClient;
+            private readonly FunnyQuotesConfiguration _config;
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            private readonly ILogger<GetQuoteCommand> _logger;
+
+            private static IHystrixCommandOptions _options =
+                new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Core.RandomQuote"), HystrixCommandKeyDefault.AsKey("Core.RandomQuote"));
+
+            public GetQuoteCommand(HttpClient httpClient, 
+                IOptions<FunnyQuotesConfiguration> config, 
+                IHttpContextAccessor httpContextAccessor, 
+                ILogger<GetQuoteCommand> logger) : base(_options)
             {
-                var client = GetClient().Result;
-
-                var json = client.GetStringAsync(RANDOM_FunnyQuotes_URL).Result;
-                var funnyQuote = JsonConvert.DeserializeObject<string>(json);
-                return funnyQuote;
+                
+                _httpClient = httpClient;
+                _config = config.Value;
+                _httpContextAccessor = httpContextAccessor;
+                _logger = logger;
             }
-            catch (Exception e)
+
+            protected override async Task<string> RunAsync()
             {
-                Console.Error.WriteLine(e);
-                throw;
+
+                try
+                {
+                    var httpRequest = new HttpRequestMessage(HttpMethod.Get, "random");
+
+                    if (_config.EnableSecurity)
+                    {
+                        var token = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+                        if (token != null)
+                            httpRequest.Headers.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+
+                    }
+
+                    var response = await _httpClient.SendAsync(httpRequest);
+                    response.EnsureSuccessStatusCode();
+                    var json = await response.Content.ReadAsStringAsync();
+                    var funnyQuote = JsonConvert.DeserializeObject<string>(json);
+                    return funnyQuote;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, e.Message);
+                    throw;
+                }
             }
 
-        }
-
-        public string GetCookieFallback() => _config.Value.FailedMessage;
-
-        private async Task<HttpClient> GetClient()
-        {
-            var client = new HttpClient(_handler, false);
-            // distributed tracing headers
-            if(_config.Value.EnableSecurity)
-            { 
-                var token = await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-                if (token != null)
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
-
-            }
-            var traceId = _httpContextAccessor.HttpContext.Request.Headers["X-B3-TraceId"].FirstOrDefault();
-            if (traceId != null)
+            protected override string RunFallback()
             {
-                client.DefaultRequestHeaders.Add("X-B3-TraceId", traceId);
-                client.DefaultRequestHeaders.Add("X-B3-ParentSpanId", _httpContextAccessor.HttpContext.Request.Headers["X-B3-SpanId"].FirstOrDefault());
-                client.DefaultRequestHeaders.Add("X-B3-SpanId", Guid.NewGuid().ToString());
+                
+                if (IsResponseTimedOut)
+                {
+                    _logger.LogWarning("Circuit is experiencing a service degradation due to timeout");
+                }
+                return _config.FailedMessage;
             }
 
-            return client;
         }
     }
 }

@@ -4,6 +4,8 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
+using System.Web.Http.Filters;
 using Autofac;
 using Autofac.Integration.WebApi;
 using FunnyQuotesCommon;
@@ -27,63 +29,63 @@ namespace FunnyQuotesServicesOwin
 {
     public class Startup
     {
-        public void Configuration(IAppBuilder appBuilder)
+        public void Configuration(IAppBuilder app)
         {
             try
             {
-//                var vcap = File.ReadAllText(@"C:\Projects\FunnyQuotes\src\FunnyQuotesServicesOwin\vcap.json");
-//                Environment.SetEnvironmentVariable("VCAP_SERVICES",vcap);
-                var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
-                var config = new ConfigurationBuilder()
-                    //                configBuilder.SetBasePath(env.ContentRootPath)
+                var httpConfig = new HttpConfiguration(); 
+                var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development"; // standard variable in asp.net core for environment declaration
+                var config = new ConfigurationBuilder() // asp.net core config provider
                     .AddJsonFile("appsettings.json", false, false)
                     .AddJsonFile($"appsettings.{env}.json", true)
                     .AddEnvironmentVariables()
-                    .AddCloudFoundry()
-                    .AddConfigServer()
+                    .AddCloudFoundry() // maps VCAP environmental variables as a config provider
+                    .AddConfigServer() // adds spring config server as a config provider
                     .Build();
                 var funnyQuotesConfig = new FunnyQuotesConfiguration();
-                config.GetSection("FunnyQuotes").Bind(funnyQuotesConfig);
-                // register DI
-                var builder = new ContainerBuilder();
-                builder.RegisterOptions();
+                config.GetSection("FunnyQuotes").Bind(funnyQuotesConfig); 
                 
-                builder.RegisterDiscoveryClient(config);
-                builder.RegisterLogging(config);
+                // -- container registration 
+                var builder = new ContainerBuilder(); // build up autofac container
+                builder.RegisterOptions(); // allow injection of strongly typed config
+                builder.RegisterDiscoveryClient(config); // register eureka service discovery
+                builder.RegisterLogging(config); // read log level settings from config
+                builder.RegisterConsoleLogging(); // forward logs to console
                 builder.RegisterMySqlConnection(config);
-                builder.Register(ctx =>
+                builder.Register(ctx => // register EF context
                 {
                     var connString = ctx.Resolve<IDbConnection>().ConnectionString;
                     return new FunnyQuotesCookieDbContext(connString);
                 });
-
-                builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
-                var container = builder.Build();
-
-                // assign autofac to provide dependency injection on controllers
-                appBuilder.UseAutofacMiddleware(container);
-                if(funnyQuotesConfig.EnableSecurity)
-                    appBuilder.AddCloudFoundryJwtBearer(config);
-                else
-                    appBuilder.Use<NoAuthenticationMiddleware>();
-                // Configure Web API for self-host. 
-                var httpConfig = new HttpConfiguration();
-                // default to json
-                httpConfig.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-                httpConfig.Routes.MapHttpRoute(
+                builder.RegisterApiControllers(Assembly.GetExecutingAssembly()); // register all controllers to be injectable
+                builder.RegisterWebApiFilterProvider(httpConfig); // register autofac support for webapi filters
+                builder.RegisterType<LoggerExceptionFilterAttribute>() // register global exception handler
+                    .AsWebApiExceptionFilterFor<ApiController>()
+                    .SingleInstance();
+                var container = builder.Build(); // compile the container
+                
+                httpConfig.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html")); // default to json instead of xml
+                httpConfig.Routes.MapHttpRoute( // setup default routing for WebApi2
                     "DefaultApi",
                     "api/{controller}/{action}"
                 );
-                httpConfig.Routes.MapHttpRoute("Health", "{controller}/{action}", new { controller = "health", action = "health" });
-
-                httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-                appBuilder.UseWebApi(httpConfig);
-                appBuilder.UseCors(CorsOptions.AllowAll);
-                // ensure that discovery client is started
-                container.StartDiscoveryClient();
+                httpConfig.Routes.MapHttpRoute("Health", 
+                    "{controller}/{action}", 
+                    new { controller = "health", action = "health" }); // map "/" to basic health endpoint so the default PCF health check for HTTP 200 response is satisfied 
+                httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container); // assign autofac to provide dependency injection on controllers
+                app.UseAutofacMiddleware(container); // allows injection of dependencies into owin middleware
+                if(funnyQuotesConfig.EnableSecurity)
+                    app.AddCloudFoundryJwtBearer(config); // add security integration for PCF SSO
+                else
+                    app.Use<NoAuthenticationMiddleware>(); // dummy security provider which is necessary if you have secured actions on controllers 
+                app.UseAutofacWebApi(httpConfig); // merges owin pipeline with autofac request lifecycle
+                app.UseWebApi(httpConfig); // standard OWIN WebAPI2
+                app.UseCors(CorsOptions.AllowAll);
+                container.StartDiscoveryClient(); // ensure that discovery client is started
             }
             catch (Exception e)
             {
+                // given that logging is DI controlled it may not be initialized, just write directly to console
                 Console.Error.WriteLine(e);
                 throw;
             }

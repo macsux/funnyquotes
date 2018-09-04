@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace FunnyQuotesServicesOwin.Authentication
 {
+    // this is same implementation found in SteelToe for asp.net core. in future will be made as an extension to SteelToe to support Owin
     public class CloudFoundryTokenKeyResolver
     {
         internal static ConcurrentDictionary<string, SecurityKey> Resolved { get; set; } = new ConcurrentDictionary<string, SecurityKey>();

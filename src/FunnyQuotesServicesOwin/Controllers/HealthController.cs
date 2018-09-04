@@ -10,13 +10,10 @@ namespace FunnyQuotesServicesOwin.Controllers
 {
     public class HealthController : ApiController
     {
-        
-  
-
         [HttpGet]
-        public string Health()
+        public object Health() // acts as a default response for "/" endpoint
         {
-            return string.Empty;
+            return new {Status = "UP"};
         }
     }
 }
