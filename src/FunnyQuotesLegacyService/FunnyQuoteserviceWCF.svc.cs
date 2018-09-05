@@ -21,7 +21,7 @@ namespace FunnyQuotesLegacyService
         public async Task<string> GetQuoteAsync()
         {
             var context = _dbContextFactory();
-            var cookies = await context.FunnyQuotes.Select(x => x.Cookie).ToListAsync();
+            var cookies = await context.FunnyQuotes.Select(x => x.Quote).ToListAsync();
             var randomCookieIndex = new Random().Next(0, cookies.Count - 1);
             return cookies[randomCookieIndex];
         }
@@ -29,7 +29,7 @@ namespace FunnyQuotesLegacyService
         public string GetQuote()
         {
             var context = _dbContextFactory();
-            var cookies = context.FunnyQuotes.Select(x => x.Cookie).ToList();
+            var cookies = context.FunnyQuotes.Select(x => x.Quote).ToList();
             var randomCookieIndex = new Random().Next(0, cookies.Count - 1);
             return cookies[randomCookieIndex];
         }

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data;
 using System.Web.Services;
+using FunnyQuotesCookieDatabase;
 using MySql.Data.MySqlClient;
 
 namespace FunnyQuotesLegacyService
@@ -26,7 +27,7 @@ namespace FunnyQuotesLegacyService
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
             var randomCookieIndex = new Random().Next(0, dataTable.Rows.Count - 1);
-            var cookie = (string) dataTable.Rows[randomCookieIndex]["Cookie"];
+            var cookie = (string) dataTable.Rows[randomCookieIndex][nameof(FunnyQuote.Quote)];
             return cookie;
         }
     }

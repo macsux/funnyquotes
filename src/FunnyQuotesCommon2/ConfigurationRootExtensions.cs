@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Timers;
 using Microsoft.Extensions.Configuration;
-// ReSharper disable CollectionNeverQueried.Local
 
 namespace FunnyQuotesCommon
 {
     public static class ConfigurationRootExtensions
     {
-        private static readonly List<Timer> Timers = new List<Timer>();
+        private static readonly List<Timer> _timers = new List<Timer>();
 
         public static IConfigurationRoot AutoRefresh(this IConfigurationRoot config, TimeSpan timeSpan)
         {
@@ -16,7 +15,7 @@ namespace FunnyQuotesCommon
             myTimer.Elapsed += (sender, args) => config.Reload();
             myTimer.Interval = 10000;
             myTimer.Enabled = true;
-            Timers.Add(myTimer);
+            _timers.Add(myTimer);
             return config;
         }
     }

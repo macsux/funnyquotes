@@ -4,8 +4,6 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesUIForms", "FunnyQuotesUIForms\FunnyQuotesUIForms.csproj", "{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCommon", "FunnyQuotesCommon\FunnyQuotesCommon.csproj", "{95A5BA31-2949-4BD7-946A-A77AD704D185}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesLegacyService", "FunnyQuotesLegacyService\FunnyQuotesLegacyService.csproj", "{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCookieDatabase", "FunnyQuotesCookieDatabase\FunnyQuotesCookieDatabase.csproj", "{85026D53-291D-4B8C-A7B8-37A9952267C1}"
@@ -13,6 +11,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunnyQuotesUICore", "FunnyQuotesUICore\FunnyQuotesUICore.csproj", "{6B5303E0-A3D1-413C-8662-17A53D9C1ED6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesServicesOwin", "FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj", "{30F209AC-A83A-413C-97BF-A50E05122EC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCommon", "FunnyQuotesCommon\FunnyQuotesCommon.csproj", "{A570EDD6-01EF-4D5E-9705-527BCD565CEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,18 +36,6 @@ Global
 		{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}.Release|x64.Build.0 = Release|Any CPU
 		{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{813CD4C2-912B-4AEE-AFE6-746F1DED74DA}.Release|x86.Build.0 = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|x64.Build.0 = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Debug|x86.Build.0 = Debug|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|x64.ActiveCfg = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|x64.Build.0 = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|x86.ActiveCfg = Release|Any CPU
-		{95A5BA31-2949-4BD7-946A-A77AD704D185}.Release|x86.Build.0 = Release|Any CPU
 		{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1CA994D-F9AF-4530-8FAE-210C0C04E77E}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -96,6 +84,18 @@ Global
 		{30F209AC-A83A-413C-97BF-A50E05122EC9}.Release|x64.Build.0 = Release|Any CPU
 		{30F209AC-A83A-413C-97BF-A50E05122EC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{30F209AC-A83A-413C-97BF-A50E05122EC9}.Release|x86.Build.0 = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|x64.Build.0 = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|x64.Build.0 = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A570EDD6-01EF-4D5E-9705-527BCD565CEA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 <%@ Page Async="true" Title="Home Page" Language="C#" MasterPageFile="~/Pivotal.Master" AutoEventWireup="true" CodeBehind="Cookies.aspx.cs" Inherits="FunnyQuotesUIForms.Cookies" %>
-<asp:Content runat="server" ID="Title" ContentPlaceHolderID="Title">FunnyQuotes Cookies</asp:Content>
+<asp:Content runat="server" ID="Title" ContentPlaceHolderID="Title">FunnyQuotes Quotes</asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <form runat="server">
         <div class="row">

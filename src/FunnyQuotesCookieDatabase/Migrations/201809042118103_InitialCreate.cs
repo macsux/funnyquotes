@@ -3,7 +3,7 @@ namespace FunnyQuotesCookieDatabase.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Initial : DbMigration
+    public partial class InitialCreate : DbMigration
     {
         public override void Up()
         {
@@ -12,8 +12,7 @@ namespace FunnyQuotesCookieDatabase.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Cookie = c.String(unicode: false),
-                        Language = c.String(unicode: false),
+                        Quote = c.String(unicode: false),
                     })
                 .PrimaryKey(t => t.Id);
             

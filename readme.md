@@ -25,3 +25,11 @@ Run `\build\build.ps1`. The output will be dropped into `\publish\`
 ### Prerequisites
 * Visual Studio 2017 with .NET core support
 **Config Repo:** https://github.com/macsux/fortunesconfig
+
+# Adding Code-First migrations
+Assumes that you have local MySQL on 3306 with `root` user, empty password, and a database called `FunnyQuotes`. If different, adjust appsettings.json and app.config in backend projects
+
+1. Modify FunnyQuotes.cs with new fields
+2. From VS Package Manager Console:
+`PM> EntityFramework\Add-Migration -Name InitialCreate -Project FunnyQuotesCookieDatabase -StartUpProject FunnyQuotesLegacyService `
+3. Examine the new migration in `FunnyQuotesCookieDatabase\Migrations` folder

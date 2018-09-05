@@ -22,7 +22,7 @@ namespace FunnyQuotesServicesOwin.Controllers
 
         public async Task<IList<string>> GetAllFunnyQuotes()
         {
-            return await _contextFactory().FunnyQuotes.Select(x => x.Cookie).ToListAsync();
+            return await _contextFactory().FunnyQuotes.Select(x => x.Quote).ToListAsync();
         }
 
 

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.IO;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
-using System.Web.Http.ExceptionHandling;
-using System.Web.Http.Filters;
 using Autofac;
 using Autofac.Integration.WebApi;
 using FunnyQuotesCommon;
@@ -22,6 +19,7 @@ using Steeltoe.CloudFoundry.ConnectorAutofac;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Security.Authentication.CloudFoundry;
 
 [assembly: OwinStartup(typeof(Startup))]
 
@@ -64,6 +62,7 @@ namespace FunnyQuotesServicesOwin
                     .SingleInstance();
                 var container = builder.Build(); // compile the container
                 
+                // -- configure owin server
                 httpConfig.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html")); // default to json instead of xml
                 httpConfig.Routes.MapHttpRoute( // setup default routing for WebApi2
                     "DefaultApi",
@@ -73,9 +72,11 @@ namespace FunnyQuotesServicesOwin
                     "{controller}/{action}", 
                     new { controller = "health", action = "health" }); // map "/" to basic health endpoint so the default PCF health check for HTTP 200 response is satisfied 
                 httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container); // assign autofac to provide dependency injection on controllers
+                
+                // -- setup app pipeline
                 app.UseAutofacMiddleware(container); // allows injection of dependencies into owin middleware
                 if(funnyQuotesConfig.EnableSecurity)
-                    app.AddCloudFoundryJwtBearer(config); // add security integration for PCF SSO
+                    app.UseCloudFoundryJwtBearerAuthentication(config); // add security integration for PCF SSO
                 else
                     app.Use<NoAuthenticationMiddleware>(); // dummy security provider which is necessary if you have secured actions on controllers 
                 app.UseAutofacWebApi(httpConfig); // merges owin pipeline with autofac request lifecycle

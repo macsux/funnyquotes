@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Linq;
 using FunnyQuotesCommon;
-using FunnyQuotesServicesOwin.Authentication;
 using FunnyQuotesUICore.Clients;
 using FunnyQuotesUICore.Security;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +11,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Pivotal.Discovery.Client;
 using Steeltoe.CircuitBreaker.Hystrix;
-using Steeltoe.Common.Discovery;
 using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Management.CloudFoundry;
-using Steeltoe.Management.Endpoint.Health;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
 namespace FunnyQuotesUICore
@@ -43,7 +37,7 @@ namespace FunnyQuotesUICore
             ((IConfigurationRoot)Configuration).AutoRefresh(TimeSpan.FromSeconds(10)); // start a background timer thread to update config every 10 seconds
                                                                                        // alternatively can do the same thing by POSTing to /refresh endpoint
             services.AddMvc();
-            services.AddCloudFoundryActuators(Configuration); // enable all actuators that integrate with CF with enabled security
+            services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
             services.AddHystrixMetricsStream(Configuration); // stream metrics telemetry to a hystrix stream
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
@@ -54,10 +48,6 @@ namespace FunnyQuotesUICore
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes")); // adds typed configuration object and map it to a section of config
             services.AddHystrixCommand<RestFunnyQuotesClient.GetQuoteCommand>("Core.RandomQuote", "Core.RandomQuote", Configuration); // register injectable hystrix command
-//            services.AddTransient<Func<RestFunnyQuotesClient.GetQuoteCommand>>(ctx =>
-//            {
-//                return () => ctx.CreateScope().ServiceProvider.GetService<RestFunnyQuotesClient.GetQuoteCommand>();
-//            });
             services.AddTransient<IFunnyQuoteService>(provider =>
             {
                 // the concrete implementation of IFunnyQuoteService is based on what's configured in config provider
@@ -72,8 +62,7 @@ namespace FunnyQuotesUICore
             services.AddHttpClient<RestFunnyQuotesClient.GetQuoteCommand>(client =>
             {
                 client.BaseAddress = new Uri("http://FunnyQuotesServicesOwin/api/FunnyQuotes/");
-
-            }).AddHttpMessageHandler<DiscoveryHttpMessageHandler>(); 
+            }).AddHttpMessageHandler<DiscoveryHttpMessageHandler>(); // use eureka integration with all HttpClient objects
 
 
             

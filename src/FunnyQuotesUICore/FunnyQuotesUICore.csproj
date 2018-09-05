@@ -9,17 +9,16 @@
     <PackageReference Include="Pivotal.Discovery.ClientCore" Version="2.1.0" />
     <PackageReference Include="Pivotal.Extensions.Configuration.ConfigServerCore" Version="2.1.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
-    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="2.0.0" />
-    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="2.0.0" />
+    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="2.1.0" />
+    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="2.1.0" />
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="2.1.0" />
-    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryCore" Version="2.0.0" />
+    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryCore" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FunnyQuotesCommon\FunnyQuotesCommon.csproj" />
-    <ProjectReference Include="..\FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.Development.json">
