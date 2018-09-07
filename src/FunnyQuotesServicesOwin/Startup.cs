@@ -10,6 +10,8 @@ using FunnyQuotesCookieDatabase;
 using FunnyQuotesServicesOwin;
 using FunnyQuotesServicesOwin.Authentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Owin;
@@ -19,6 +21,8 @@ using Steeltoe.CloudFoundry.ConnectorAutofac;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Extensions.Logging;
+using Steeltoe.Management.EndpointAutofac;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
 [assembly: OwinStartup(typeof(Startup))]
@@ -48,7 +52,9 @@ namespace FunnyQuotesServicesOwin
                 builder.RegisterOptions(); // allow injection of strongly typed config
                 builder.RegisterDiscoveryClient(config); // register eureka service discovery
                 builder.RegisterLogging(config); // read log level settings from config
-                builder.RegisterConsoleLogging(); // forward logs to console
+                builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
+                    .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
+                    .As<ILoggerProvider>(); 
                 builder.RegisterMySqlConnection(config);
                 builder.Register(ctx => // register EF context
                 {
@@ -60,6 +66,7 @@ namespace FunnyQuotesServicesOwin
                 builder.RegisterType<LoggerExceptionFilterAttribute>() // register global exception handler
                     .AsWebApiExceptionFilterFor<ApiController>()
                     .SingleInstance();
+                builder.RegisterCloudFoundryActuators(config);
                 var container = builder.Build(); // compile the container
                 
                 // -- configure owin server
@@ -83,6 +90,7 @@ namespace FunnyQuotesServicesOwin
                 app.UseWebApi(httpConfig); // standard OWIN WebAPI2
                 app.UseCors(CorsOptions.AllowAll);
                 container.StartDiscoveryClient(); // ensure that discovery client is started
+                container.StartActuators();
             }
             catch (Exception e)
             {

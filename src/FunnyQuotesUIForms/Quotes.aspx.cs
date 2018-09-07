@@ -4,7 +4,7 @@ using FunnyQuotesCommon;
 
 namespace FunnyQuotesUIForms
 {
-    public partial class Cookies : Page
+    public partial class Quotes : Page
     {
         public IFunnyQuoteService FunnyQuoteService { get; set; }
 

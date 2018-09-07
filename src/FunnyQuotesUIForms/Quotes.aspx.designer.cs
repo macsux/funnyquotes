@@ -10,7 +10,7 @@
 namespace FunnyQuotesUIForms {
     
     
-    public partial class Cookies {
+    public partial class Quotes {
         
         /// <summary>
         /// lblCookie control.

@@ -7,11 +7,15 @@ using Autofac.Integration.Wcf;
 using Autofac.Integration.Web;
 using FunnyQuotesCookieDatabase;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Pivotal.Discovery.Client;
 using Steeltoe.CloudFoundry.ConnectorAutofac;
+using Steeltoe.Common.Configuration.Autofac;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Extensions.Logging;
 
 namespace FunnyQuotesLegacyService
 {
@@ -31,9 +35,13 @@ namespace FunnyQuotesLegacyService
             var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
             ApplicationConfig.RegisterConfig(env);
             var builder = new ContainerBuilder();
+            builder.RegisterConfiguration(ApplicationConfig.Configuration);
+            builder.RegisterLogging(ApplicationConfig.Configuration);
             builder.RegisterOptions();
             builder.RegisterDiscoveryClient(ApplicationConfig.Configuration);
-            builder.RegisterConsoleLogging();
+            builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(ApplicationConfig.Configuration))) // add SteelToe dynamic logger. works similar to
+                .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
+                .As<ILoggerProvider>(); 
             builder.RegisterMySqlConnection(ApplicationConfig.Configuration);
             builder.Register(ctx =>
             {
@@ -42,7 +50,7 @@ namespace FunnyQuotesLegacyService
             });
             builder.RegisterType<FunnyQuoteServiceWcf>();
             var container = builder.Build();
-
+            container.StartActuators();
             // ensure that discovery client component starts up
             container.StartDiscoveryClient();
             // force db opeartion so db gets created on startup

@@ -7,7 +7,7 @@ namespace FunnyQuotesUIForms
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Response.Redirect("Quotes.aspx");
+            Response.Redirect($"{nameof(Quotes)}.aspx");
         }
     }
 }
