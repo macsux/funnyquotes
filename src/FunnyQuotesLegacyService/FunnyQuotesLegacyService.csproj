@@ -169,8 +169,8 @@
       <HintPath>..\packages\Pivotal.Discovery.EurekaBase.2.1.0\lib\netstandard2.0\Pivotal.Discovery.EurekaBase.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Steeltoe.CloudFoundry.ConnectorAutofac, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Steeltoe.CloudFoundry.ConnectorAutofac.2.0.0\lib\netstandard2.0\Steeltoe.CloudFoundry.ConnectorAutofac.dll</HintPath>
+    <Reference Include="Steeltoe.CloudFoundry.ConnectorAutofac, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Steeltoe.CloudFoundry.ConnectorAutofac.2.1.0\lib\netstandard2.0\Steeltoe.CloudFoundry.ConnectorAutofac.dll</HintPath>
     </Reference>
     <Reference Include="Steeltoe.CloudFoundry.ConnectorBase, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Steeltoe.CloudFoundry.ConnectorBase.2.1.0\lib\netstandard2.0\Steeltoe.CloudFoundry.ConnectorBase.dll</HintPath>
@@ -369,7 +369,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationConfig.cs" />
+    <Compile Include="App_Start\ApplicationConfig.cs" />
+    <Compile Include="App_Start\ManagementConfig.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -387,7 +388,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="ManagementConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FunnyQuotesServicesOwin
 {
@@ -10,6 +11,7 @@ namespace FunnyQuotesServicesOwin
     {
         protected void Application_Start()
         {
+            
         }
 
     }

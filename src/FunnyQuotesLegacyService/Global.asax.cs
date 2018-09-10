@@ -40,8 +40,9 @@ namespace FunnyQuotesLegacyService
             builder.RegisterOptions();
             builder.RegisterDiscoveryClient(ApplicationConfig.Configuration);
             builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(ApplicationConfig.Configuration))) // add SteelToe dynamic logger. works similar to
-                .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
-                .As<ILoggerProvider>(); 
+                .AsSelf()                                                                                                                      // console logger, but allows log levels to be altered 
+                .As<ILoggerProvider>()
+                .SingleInstance(); 
             builder.RegisterMySqlConnection(ApplicationConfig.Configuration);
             builder.Register(ctx =>
             {

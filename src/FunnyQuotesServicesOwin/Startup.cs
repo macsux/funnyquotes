@@ -18,6 +18,7 @@ using Owin;
 using Pivotal.Discovery.Client;
 using Pivotal.Extensions.Configuration.ConfigServer;
 using Steeltoe.CloudFoundry.ConnectorAutofac;
+using Steeltoe.Common.Configuration.Autofac;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
@@ -37,6 +38,8 @@ namespace FunnyQuotesServicesOwin
             {
                 var httpConfig = new HttpConfiguration(); 
                 var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development"; // standard variable in asp.net core for environment declaration
+                
+                
                 var config = new ConfigurationBuilder() // asp.net core config provider
                     .AddJsonFile("appsettings.json", false, false)
                     .AddJsonFile($"appsettings.{env}.json", true)
@@ -51,10 +54,13 @@ namespace FunnyQuotesServicesOwin
                 var builder = new ContainerBuilder(); // build up autofac container
                 builder.RegisterOptions(); // allow injection of strongly typed config
                 builder.RegisterDiscoveryClient(config); // register eureka service discovery
-                builder.RegisterLogging(config); // read log level settings from config
-                builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
-                    .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
-                    .As<ILoggerProvider>(); 
+//                builder.RegisterLogging(config); // read log level settings from config
+//                builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
+//                    .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
+//                    .As<ILoggerProvider>()
+//                    .SingleInstance(); 
+                builder.RegisterConfiguration(config);
+                builder.RegisterCloudFoundryOptions(config);
                 builder.RegisterMySqlConnection(config);
                 builder.Register(ctx => // register EF context
                 {
@@ -66,7 +72,7 @@ namespace FunnyQuotesServicesOwin
                 builder.RegisterType<LoggerExceptionFilterAttribute>() // register global exception handler
                     .AsWebApiExceptionFilterFor<ApiController>()
                     .SingleInstance();
-                builder.RegisterCloudFoundryActuators(config);
+                builder.RegisterCloudFoundryActuators(config); 
                 var container = builder.Build(); // compile the container
                 
                 // -- configure owin server
@@ -91,6 +97,8 @@ namespace FunnyQuotesServicesOwin
                 app.UseCors(CorsOptions.AllowAll);
                 container.StartDiscoveryClient(); // ensure that discovery client is started
                 container.StartActuators();
+                var logger = container.Resolve<ILogger<Startup>>();
+                logger.LogInformation(">> App Started <<");
             }
             catch (Exception e)
             {

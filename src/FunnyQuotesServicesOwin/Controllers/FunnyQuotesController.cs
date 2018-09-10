@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FunnyQuotesCookieDatabase;
+using Microsoft.Extensions.Logging;
 
 namespace FunnyQuotesServicesOwin.Controllers
 {
@@ -12,12 +13,13 @@ namespace FunnyQuotesServicesOwin.Controllers
     public class FunnyQuotesController : ApiController
     {
         private readonly Func<FunnyQuotesCookieDbContext> _contextFactory;
+        private readonly ILogger<FunnyQuotesController> _logger;
 
         // GET api/values 
-        public FunnyQuotesController(Func<FunnyQuotesCookieDbContext> contextFactory)
+        public FunnyQuotesController(Func<FunnyQuotesCookieDbContext> contextFactory, ILogger<FunnyQuotesController> logger)
         {
-            
             _contextFactory = contextFactory;
+            _logger = logger;
         }
 
         public async Task<IList<string>> GetAllFunnyQuotes()
@@ -30,9 +32,12 @@ namespace FunnyQuotesServicesOwin.Controllers
         [ActionName("random")]
         public async Task<string> GetRandom()
         {
-            var FunnyQuotes = await GetAllFunnyQuotes();
-            var random = new Random().Next(0, FunnyQuotes.Count() - 1);
-            return FunnyQuotes[random];
+            _logger.LogTrace("Getting random quotes");
+            var funnyQuotes = await GetAllFunnyQuotes();
+            
+            var random = new Random().Next(0, funnyQuotes.Count() - 1);
+            _logger.LogDebug($"Total of {funnyQuotes.Count} found in db");
+            return funnyQuotes[random];
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Net;
 using System.Web;
 using Autofac;
 using Autofac.Integration.Web;
-using CloudFoundryWeb;
 using FunnyQuotesCommon;
 using FunnyQuotesUIForms.Clients;
 using Microsoft.Extensions.Configuration;
@@ -57,7 +56,8 @@ namespace FunnyQuotesUIForms
                 builder.RegisterLogging(config); // allow loggers to be injectable by AutoFac
                 builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
                     .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
-                    .As<ILoggerProvider>();                                                                               // via management endpoints
+                    .As<ILoggerProvider>()
+                    .SingleInstance();                                                                               // via management endpoints
                 builder.RegisterHystrixMetricsStream(config);
                 builder.RegisterType<DiskSpaceContributor>().As<IHealthContributor>();
                 

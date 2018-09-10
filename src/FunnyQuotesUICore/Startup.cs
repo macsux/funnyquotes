@@ -13,6 +13,7 @@ using Pivotal.Discovery.Client;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Management.CloudFoundry;
+using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
 namespace FunnyQuotesUICore
@@ -40,11 +41,13 @@ namespace FunnyQuotesUICore
             services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
             services.AddHystrixMetricsStream(Configuration); // stream metrics telemetry to a hystrix stream
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
+            services.AddDistributedTracing(Configuration); //
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // .net core way of accessing current http context (legacy HttpContext.Current)
             services.AddLogging(); // can inject ILogger<T> 
             services.AddSingleton<LocalFunnyQuoteService>();
             services.AddScoped<RestFunnyQuotesClient>();
+            
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes")); // adds typed configuration object and map it to a section of config
             services.AddHystrixCommand<RestFunnyQuotesClient.GetQuoteCommand>("Core.RandomQuote", "Core.RandomQuote", Configuration); // register injectable hystrix command
@@ -100,6 +103,7 @@ namespace FunnyQuotesUICore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -111,8 +115,10 @@ namespace FunnyQuotesUICore
             }
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseForwardedHeaders(); // correctly configures oauth2 token redirect back to the app by ensuring the public protocol is matched (https vs http).
+                                       // this is done by looking at headers, because from apps perspective it always looks like it's http because TLS was terminated earlier
             app.UseCloudFoundryActuators(); // creates the route maps in the MVC stack for actuators
-            app.UseHystrixRequestContext(); // allows request context to be accessable within hystrix execution model.
+            app.UseHystrixRequestContext(); // allows request context to be accessible within hystrix execution model.
                                             // this is necessary because there's some thread switching happening
             app.UseMvc(routes =>
             {
