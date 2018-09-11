@@ -19,9 +19,12 @@ namespace FunnyQuotesUICore.Clients
     public class RestFunnyQuotesClient : IFunnyQuoteService
     {
         private readonly GetQuoteCommand _getQuoteCommand;
-        public RestFunnyQuotesClient(GetQuoteCommand getQuoteCommand)
+        private readonly IDiscoveryClient _discoveryClient;
+
+        public RestFunnyQuotesClient(GetQuoteCommand getQuoteCommand, IDiscoveryClient discoveryClient)
         {
             _getQuoteCommand = getQuoteCommand;
+            _discoveryClient = discoveryClient;
         }
 
 
@@ -62,6 +65,7 @@ namespace FunnyQuotesUICore.Clients
             protected override async Task<string> RunAsync()
             {
 
+                _logger.LogTrace("Invoking GetQuote Run");
                 try
                 {
                     var httpRequest = new HttpRequestMessage(HttpMethod.Get, "random");
@@ -89,7 +93,7 @@ namespace FunnyQuotesUICore.Clients
 
             protected override string RunFallback()
             {
-                
+                _logger.LogTrace("Invoking GetQuote Fallback");
                 if (IsResponseTimedOut)
                 {
                     _logger.LogWarning("Circuit is experiencing a service degradation due to timeout");

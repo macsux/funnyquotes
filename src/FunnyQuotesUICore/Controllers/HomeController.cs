@@ -30,20 +30,12 @@ namespace FunnyQuotesUICore.Controllers
         [Authorize(Policy = "useridentity")]
         public async Task<IActionResult> GetQuote()
         {
-            try
-            {
 
+            ViewBag.Provider = _client.GetType().FullName;
+            var result = await _client.GetQuoteAsync();
             
-                ViewBag.Provider = _client.GetType().FullName;
-                var result = await _client.GetQuoteAsync();
-                
-                return View("Index", result);
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e);
-                throw;
-            }
+            return View("Index", result);
+
         }
 
         [HttpGet]

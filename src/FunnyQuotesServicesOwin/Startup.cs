@@ -9,6 +9,7 @@ using FunnyQuotesCommon;
 using FunnyQuotesCookieDatabase;
 using FunnyQuotesServicesOwin;
 using FunnyQuotesServicesOwin.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -19,11 +20,15 @@ using Pivotal.Discovery.Client;
 using Pivotal.Extensions.Configuration.ConfigServer;
 using Steeltoe.CloudFoundry.ConnectorAutofac;
 using Steeltoe.Common.Configuration.Autofac;
+using Steeltoe.Common.Diagnostics;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 using Steeltoe.Extensions.Logging;
+using Steeltoe.Management.Census.Trace;
 using Steeltoe.Management.EndpointAutofac;
+using Steeltoe.Management.EndpointOwin.Diagnostics;
+using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
 [assembly: OwinStartup(typeof(Startup))]
@@ -72,7 +77,13 @@ namespace FunnyQuotesServicesOwin
                 builder.RegisterType<LoggerExceptionFilterAttribute>() // register global exception handler
                     .AsWebApiExceptionFilterFor<ApiController>()
                     .SingleInstance();
-                builder.RegisterCloudFoundryActuators(config); 
+                builder.RegisterCloudFoundryActuators(config);
+
+                builder.RegisterType<DiagnosticsManager>().As<IDiagnosticsManager>().SingleInstance();
+                builder.Register(ctx => new TracingOptions(ctx.Resolve<IHostingEnvironment>().ApplicationName, config)).SingleInstance();
+                builder.RegisterType<OpenCensusTracing>().As<ITracing>().SingleInstance();
+                builder.RegisterType<TracingLogProcessor>().As<IDynamicMessageProcessor>().SingleInstance();
+
                 var container = builder.Build(); // compile the container
                 
                 // -- configure owin server
@@ -87,6 +98,7 @@ namespace FunnyQuotesServicesOwin
                 httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container); // assign autofac to provide dependency injection on controllers
                 
                 // -- setup app pipeline
+                app.UseDiagnosticSourceMiddleware();
                 app.UseAutofacMiddleware(container); // allows injection of dependencies into owin middleware
                 if(funnyQuotesConfig.EnableSecurity)
                     app.UseCloudFoundryJwtBearerAuthentication(config); // add security integration for PCF SSO
@@ -97,6 +109,8 @@ namespace FunnyQuotesServicesOwin
                 app.UseCors(CorsOptions.AllowAll);
                 container.StartDiscoveryClient(); // ensure that discovery client is started
                 container.StartActuators();
+                container.Resolve<IDiagnosticsManager>().Start();
+                
                 var logger = container.Resolve<ILogger<Startup>>();
                 logger.LogInformation(">> App Started <<");
             }

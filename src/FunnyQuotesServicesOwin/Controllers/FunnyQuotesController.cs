@@ -32,6 +32,7 @@ namespace FunnyQuotesServicesOwin.Controllers
         [ActionName("random")]
         public async Task<string> GetRandom()
         {
+            Console.WriteLine("Control method");
             _logger.LogTrace("Getting random quotes");
             var funnyQuotes = await GetAllFunnyQuotes();
             

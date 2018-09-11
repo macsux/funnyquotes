@@ -329,6 +329,9 @@
       <HintPath>..\packages\Steeltoe.Management.OpenCensus.2.1.0\lib\netstandard2.0\Steeltoe.Management.OpenCensus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Steeltoe.Management.TracingBase, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Steeltoe.Management.TracingBase.2.1.0\lib\netstandard2.0\Steeltoe.Management.TracingBase.dll</HintPath>
+    </Reference>
     <Reference Include="Steeltoe.Security.Authentication.CloudFoundryCore, Version=2.1.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Steeltoe.Security.Authentication.CloudFoundryCore.2.1.0\lib\netstandard2.0\Steeltoe.Security.Authentication.CloudFoundryCore.dll</HintPath>
       <Private>True</Private>

@@ -5,6 +5,7 @@ using FunnyQuotesUICore.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -114,9 +115,14 @@ namespace FunnyQuotesUICore
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
+            // correctly configures oauth2 token redirect back to the app by ensuring the public protocol is matched (https vs http).
+            // this is done by looking at headers, because from apps perspective it always looks like it's http because TLS was terminated earlier
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
-            app.UseForwardedHeaders(); // correctly configures oauth2 token redirect back to the app by ensuring the public protocol is matched (https vs http).
-                                       // this is done by looking at headers, because from apps perspective it always looks like it's http because TLS was terminated earlier
+            
             app.UseCloudFoundryActuators(); // creates the route maps in the MVC stack for actuators
             app.UseHystrixRequestContext(); // allows request context to be accessible within hystrix execution model.
                                             // this is necessary because there's some thread switching happening
@@ -128,6 +134,7 @@ namespace FunnyQuotesUICore
             });
             app.UseHystrixMetricsStream(); // start publishing hystrix metric stream 
             app.UseDiscoveryClient(); // start eureka client and connect to the registry server to fetch registry
+            
         }
     }
 }
