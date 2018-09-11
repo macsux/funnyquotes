@@ -59,11 +59,6 @@ namespace FunnyQuotesServicesOwin
                 var builder = new ContainerBuilder(); // build up autofac container
                 builder.RegisterOptions(); // allow injection of strongly typed config
                 builder.RegisterDiscoveryClient(config); // register eureka service discovery
-//                builder.RegisterLogging(config); // read log level settings from config
-//                builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
-//                    .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
-//                    .As<ILoggerProvider>()
-//                    .SingleInstance(); 
                 builder.RegisterConfiguration(config);
                 builder.RegisterCloudFoundryOptions(config);
                 builder.RegisterMySqlConnection(config);
@@ -79,11 +74,6 @@ namespace FunnyQuotesServicesOwin
                     .SingleInstance();
                 builder.RegisterCloudFoundryActuators(config);
 
-                builder.RegisterType<DiagnosticsManager>().As<IDiagnosticsManager>().SingleInstance();
-                builder.Register(ctx => new TracingOptions(ctx.Resolve<IHostingEnvironment>().ApplicationName, config)).SingleInstance();
-                builder.RegisterType<OpenCensusTracing>().As<ITracing>().SingleInstance();
-                builder.RegisterType<TracingLogProcessor>().As<IDynamicMessageProcessor>().SingleInstance();
-
                 var container = builder.Build(); // compile the container
                 
                 // -- configure owin server
@@ -98,7 +88,6 @@ namespace FunnyQuotesServicesOwin
                 httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container); // assign autofac to provide dependency injection on controllers
                 
                 // -- setup app pipeline
-                app.UseDiagnosticSourceMiddleware();
                 app.UseAutofacMiddleware(container); // allows injection of dependencies into owin middleware
                 if(funnyQuotesConfig.EnableSecurity)
                     app.UseCloudFoundryJwtBearerAuthentication(config); // add security integration for PCF SSO

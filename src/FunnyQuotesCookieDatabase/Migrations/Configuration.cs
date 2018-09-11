@@ -8,7 +8,7 @@ namespace FunnyQuotesCookieDatabase.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(FunnyQuotesCookieDbContext context)
