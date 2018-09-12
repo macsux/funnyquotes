@@ -1,0 +1,24 @@
+== Security
+====
+Prerequisites:
+
+* SSO Tile installed
+* SSO plan called sso-dev is create and has IDP called "gcp" configured against google. See https://docs.pivotal.io/p-identity/1-5/#gcp
+* You can access SSO admin portal to edit user's permissions
+====
+
+. Create an instance of SSO from marketplace (call service `sso`)
+. Bind it to FunnyQuotesUICore & FunnyQuotesServicesOwin
+. Edit application.yml in config repo and enable security. Commit + push
+. Restart both apps
+. Check manifest.yml for SSO settings to use for FunnyQuotesUICore.
+.. Adjust SSO_REDIRECT_URIS to be correct based on environment
+.. Push the app using the manifest (delete other apps from it)
+. Access the FunnyQuotesUICore and get a cookie. You should be redirected to authenticate with google
+. Access the sso plan from apps manager. Explain:
+.. How adding apps works, their types and how they map on to OAuth2 flows
+.. How managing resources declared by app
+. Click Kill button and highlight that different set of permissions is required
+. Go to SSO admin portal. Edit plan IDP, manage users. Add resource `funnyquote.kill` to the previously logged in user.
+. Get a new token by logging out and relogging. 
+. Kill command should now work

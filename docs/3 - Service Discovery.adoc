@@ -1,0 +1,31 @@
+== Service Discovery
+
+=== Show service discovery locally
+. Pull down docker image
+
+ > docker pull springcloud/eureka
+
+. Run it
+
+ > docker run -d --name eureka -p 8761:8761/tcp springcloud/eureka
+
+. Launch FunnyQuotesLegacyService or FunnyQuotesServicesOwin from Visual Studio
+
+. Check the dashboard http://localhost:8761/ to confirm registration
+
+=== Service discovery on PCF
+. Provision eureka from PCF marketplace. Call instance "eureka"
+. Bind it to FunnyQuotesLegacyService & FunnyQuoteServicesOwin. Restart both
+. Navigate to service dashboard
+.. Apps Manager > Space > Services > Eureka > Manage
+. Confirm both apps are showing up in the registry. Explain how we can now resolve the URL endpoint by well known name
+
+=== Things to higllight in code
+. Open appsettings.json
+.. Explain `eureka:client` section when running locally
+.. This will be overriden when running on CloudFoundry
+. In startup.cs
+.. `services.AddDiscoveryClient(Configuration);` to register discovery services
+.. `app.UseDiscoveryClient();` to start using them
+.. `.AddHttpMessageHandler<DiscoveryHttpMessageHandler>();` when building up HttpClient factory
+.. Explain the use of HttpClientFactory (new in ASP.NET Core 2.1). Article explaining why it should be used instead of using HttpClient by hand https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore

@@ -1,0 +1,20 @@
+== Hystrix
+. Create hystrix dashboard on PCF marketplace
+. Bind to FunnyQuotesUICore & restart
+. Access Hystrix dashboard (service > manage from App Manager)
+. Access FunnyQuotesUICore GUI and request a few quotes
+. Show dashboard and successful counts
+. Stop backend FunnyQuotesServiceOwin
+. Request quotes from GUI
+.. Highlight low latency fallback to default message
+.. Show dashboard failed counts (red)
+. Keep requesting quotes until circuit is triggered
+.. Highlight fallback requests in open circuit (blue)
+
+== Show code
+. Open FunnyQuotesUICore.Clients.RestFunnyQuotesClient
+.. Highlight how commands are created
+.. Explain thread isolation based on circuit group name to avoid thread starvation scenario
+.. Because execution happens on different set of threads, access to HttpContext must be properly marshalled. Show use of `app.UseHystrixRequestContext()` in Startup.cs to do this.
+. Show `services.AddHystrixCommand<RestFunnyQuotesClient.GetQuoteCommand>("Core.RandomQuote", "Core.RandomQuote", Configuration);` to register commands into container
+. Show services.AddHystrixMetricsStream(Configuration); and app.UseHystrixMetricsStream(); to publish metrics to dashboard

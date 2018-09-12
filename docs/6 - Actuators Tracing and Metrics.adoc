@@ -1,0 +1,24 @@
+== Actuators
+. Launch FunnyQuotesUICore locally
+. Access http://localhost:60421/cloudfoundryapplication and show different actuator endpoints and data within them
+. Hit the same endpoint on PCF to highlight that it's secured when running on the platform
+. Open up apps manager. (Ensure that app has been opened at least once over https if using self signed certs).
+.. Highlight special Steeltoe icon (actuators were detected in the app)
+.. Highlight health check for each instance
+.. Show dynamic log levels
+.. Show request tracing
+
+== Metrics
+. View the Metrics link of the app. Highlight the following:
+.. Dashboarding & ability to add charts for metrics
+.. Events chart
+.. Pulling up logs over timeline
+.. Different sources of logs (RTR/APP)
+. Find a log for a router logs for quote requests  (search for `GET /Home/GetQuote` keyword). Access distributed tracing. Highlight the Gantt chart. 
+.. Note: Automatic log correlation only works in .NET core apps, but you can get Gantt charts out of the box. Will be added in future version of Steeltoe. Manual correlation can be done right now by prefixing all logs with traceid/spanid in incoming headers
+
+== Highlight Code
+. Adding actuators and enabling them in code. See startup.cs or global.asmx.cs and search for `Actuator`. It has to be registered and activated.
+. When using legacy stack with autofac, adding actuators automatically registers dynamic console logger which is needed to change log levels at runtime
+.. For .NET core app, open up Program.cs and highlight explicit registration of dynamic console
+. Show  services.AddDistributedTracing(Configuration); and how it automatically appends headers to any HttpClient invocations (.NET core only)

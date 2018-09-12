@@ -1,0 +1,76 @@
+== Config Server
+====
+We want to get FunnyQuotes client to use a different implementation of IFunnyQuotesService to talk to backend instead of pulling quotes from memory. There are multiple named implementations registered into dependency injection container. The instance supplied for IFunnyQuotesService is dependent on config value. We're going to use config settings to swap out the implementation it will use 
+====
+
+==== Explaining config server locally
+. Create a docker instance of config server:
+
+ > docker pull hyness/spring-cloud-config-server
+ > docker run --name configserver -p 8888:8888 -d -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/macsux/fortunesconfig hyness/spring-cloud-config-server
+
+. Show how config server serving up values for different apps and profiles:
+.. http://localhost:8888/FunnyQuotesUIForms/Production
+.. http://localhost:8888/FunnyQuotesUICore/Production
+.. http://localhost:8888/FunnyQuotesUICore/Development
+
+. Explain the usage of environment (second part of URL) to override settings. In .NET Core apps this value comes from `ASPNETCORE_ENVIRONMENT` environmental variable
+
+==== On PCF
+. Fork funny-quotes-config (so you can push to it)
+. Edit gitconfig.json (in root folder) and adjust URL to forked repo
+. Provision config server from marketplace
+
+ > cf create-service p-config-server standard config-server -c gitconfig.json
+ 
+. Bind to all 4 applications and restart all apps
+. Open FunnyQuotesUICore and highlight the different provider being used
+. Open up FunnyQuotesUIForms and highlight how it works with legacy stack too
+. Edit git config repo for FunnyQuotesUIForms.yaml. Change ClientType to `wcf` (possible values are `local`, `wcf`, `asmx`, `rest`).
+. Save settings, commit and push
+. Wait at least 10 seconds and go back to the FunnyQuotesUIForms. Highlight that new provider is picked up without restart of the app
+
+====
+Other things to show
+
+* Integrated security of config server secured by OAuth. Show VCAP_Services to highlight this fact
+* Config server is a Java Spring app
+* Spring uses the same layered config as in .NET core. Environmental variable to set URL of repo is actually using the same config sementics but in Java 
+====
+
+==== Things to highlight in code
+
+.  `.AddConfigServer(env, logFactory)` in Global.cs (legacy apps) or Program.cs (.NET core). 
+. Open up appsettings.json
+.. Explain how name of app comes from `spring:application:name`
+.. Explain how `spring:cloud:config` section determines settings when running config server locally
+. Different packages `Pivotal` vs `Steeltoe`. Difference is OAuth2 security. Pivotal package will work with non secured as well
+. Using Pivotal package will also add Cloud Foundry VCAP variables as a config source
+. Show registration and selection of DI instances based on config value in FunnyQuotesUIForms.Global.asmx.cs:
+
+ builder.RegisterType<AsmxFunnyQuotesClient>().Named<IFunnyQuoteService>("asmx");
+  builder.RegisterType<WcfFunnyQuotesClient>().Named<IFunnyQuoteService>("wcf");
+  builder.RegisterType<LocalFunnyQuoteService>().Named<IFunnyQuoteService>("local");
+  builder.RegisterType<RestFunnyQuotesClient>().amed<IFunnyQuoteService>("rest");
+  // register dynamic resolution of implementation of IFunnyQuoteService based on named implementation defined in the config
+  builder.Register(c =>
+  {
+      var quotesConfig = c.Resolve<IOptionsSnapshot<FunnyQuotesConfiguration>>();
+      return c.ResolveNamed<IFunnyQuoteService>(quotesConfig.Value.ClientType);
+                })
+                
+                
+==== Feature toggles
+. Explain using feature toggles to push disabled code into prod and using config to activate it vs branching
+. Highlight usages of it in codebase for security. Don't enable yet:
+.. Startup.cs in FunnyQuotesUICore
+
+ if (funnyquotesConfig.EnableSecurity) 
+     authBuilder.AddCloudFoundryOAuth(Configuration);`
+     
+.. Startup.cs in FunnyQuotesServicesOwin
+
+ if(funnyQuotesConfig.EnableSecurity)
+    app.UseCloudFoundryJwtBearerAuthenticationconfig); 
+   else
+       app.Use<NoAuthenticationMiddleware>(); 
