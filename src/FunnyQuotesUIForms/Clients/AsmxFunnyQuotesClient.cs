@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
-using FunnyQuotesUIForms.Web_References.FunnyQuotesLegacyService;
+using FunnyQuotesUIForms.FunnyQuotesLegacyService;
 using Microsoft.Extensions.Options;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;

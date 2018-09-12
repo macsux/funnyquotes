@@ -251,6 +251,7 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
       <Private>True</Private>
@@ -336,6 +337,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Primitives, Version=4.5.0.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ServiceModel.Primitives.4.5.3\lib\net461\System.ServiceModel.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -433,10 +437,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Web References\FunnyQuotesLegacyService\FunnyQuoteserviceLegacy.wsdl" />
-    <Content Include="Web References\FunnyQuotesLegacyService\Reference.map">
+    <None Include="Web References\FunnyQuotesLegacyService\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -505,10 +509,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:55483/FunnyQuoteserviceLegacy.asmx">
+    <WebReferenceUrl Include="http://localhost:55483/FunnyQuoteserviceLegacy.asmx ">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\FunnyQuotesLegacyService\</RelPath>
-      <UpdateFromURL>http://localhost:55483/FunnyQuoteserviceLegacy.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost:55483/FunnyQuoteserviceLegacy.asmx </UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
