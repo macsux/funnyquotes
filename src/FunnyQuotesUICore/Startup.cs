@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using FunnyQuotesCommon;
 using FunnyQuotesUICore.Clients;
 using FunnyQuotesUICore.Security;
@@ -81,7 +82,8 @@ namespace FunnyQuotesUICore
                 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("useridentity", policy => policy.RequireClaim("scope","openid"));
+                options.AddPolicy("authenticated", policy => policy.RequireClaim("scope","openid"));
+                options.AddPolicy("elevated", policy => policy.RequireClaim("scope", "kill"));
             });
             
             // use CF SSO if security is enabled

@@ -26,8 +26,8 @@ namespace FunnyQuotesUICore.Controllers
             return View();
         }
 
-        [Authorize]
-        [Authorize(Policy = "useridentity")]
+        
+        [Authorize(Policy = "authenticated")]
         public async Task<IActionResult> GetQuote()
         {
 
@@ -37,6 +37,15 @@ namespace FunnyQuotesUICore.Controllers
             return View("Index", result);
 
         }
+
+        [HttpGet]
+        [Authorize(Policy = "elevated")]
+        public IActionResult Kill()
+        {
+            Environment.Exit(-1);
+            return Ok();
+        }
+        
 
         [HttpGet]
         [Authorize]
