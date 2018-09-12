@@ -3,11 +3,11 @@
 === Show service discovery locally
 . Pull down docker image
 
- > docker pull springcloud/eureka
+ > docker pull mayan31370/spring-eureka
 
 . Run it
 
- > docker run -d --name eureka -p 8761:8761/tcp springcloud/eureka
+ > docker run -d --name eureka -p 8761:8080/tcp mayan31370/spring-eureka
 
 . Launch FunnyQuotesLegacyService or FunnyQuotesServicesOwin from Visual Studio
 
