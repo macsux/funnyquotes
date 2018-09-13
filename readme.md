@@ -12,6 +12,8 @@ Technical Features Demonstrated:
 - Config server with GIT repo
 
 # Solution Projects
+![Architecture](https://github.com/Pivotal-Field-Engineering/funny-quotes-demo/blob/master/docs/images/architecture.png)
+
 The solution revolves around a simple application that displays random quotes when a button is pressed. It also features a Kill command to simulate application failure.
 * FunnyQuotesUIForms - Web forms GUI. Depends on Eureka and Config Server. Depending on config value served by Config Server, the source of the messages shown will be switched between local in memory, ASMX service, WCF service, or REST
 * FunnyQuotesLegacyService - Contains ASMX service and WCF service implementations for serving messages
@@ -21,15 +23,20 @@ The solution revolves around a simple application that displays random quotes wh
 * FunnyQuotesUICore - Modern .NET core version running on linux stack. Calls backend services directly from javascript.
 
 # How to build
-Run `\build\build.ps1`. The output will be dropped into `\publish\`
+* Open Visual Studio. 
+* Publish each product using supplied publish profile.
+* Output is places in `\publish\` folder
+* Use `create-services.bat` and `manifest.yml` in `\scripts` to push everything to PCF (copy manifest into publish folder) 
+
 ### Prerequisites
 * Visual Studio 2017 with .NET core support
-**Config Repo:** https://github.com/macsux/fortunesconfig
+* Docker with images for
+  * Config server
+  * Eureka
+  * Hystrix dashboard
+  * MySQL
 
-# Adding Code-First migrations
-Assumes that you have local MySQL on 3306 with `root` user, empty password, and a database called `FunnyQuotes`. If different, adjust appsettings.json and app.config in backend projects
+**Config Repo:** https://github.com/Pivotal-Field-Engineering/funny-quotes-config
 
-1. Modify FunnyQuotes.cs with new fields
-2. From VS Package Manager Console:
-`PM> EntityFramework\Add-Migration -Name InitialCreate -Project FunnyQuotesCookieDatabase -StartUpProject FunnyQuotesLegacyService `
-3. Examine the new migration in `FunnyQuotesCookieDatabase\Migrations` folder
+# How to present
+See `docs` folder
