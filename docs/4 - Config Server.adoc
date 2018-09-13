@@ -7,7 +7,7 @@ We want to get FunnyQuotes client to use a different implementation of IFunnyQuo
 . Create a docker instance of config server:
 
  > docker pull hyness/spring-cloud-config-server
- > docker run --name configserver -p 8888:8888 -d -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/macsux/fortunesconfig hyness/spring-cloud-config-server
+ > docker run --name configserver -p 8888:8888 -d -e SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/Pivotal-Field-Engineering/funny-quotes-config hyness/spring-cloud-config-server
 
 . Show how config server serving up values for different apps and profiles:
 .. http://localhost:8888/FunnyQuotesUIForms/Production
