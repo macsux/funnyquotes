@@ -1,0 +1,11 @@
+---
+applications:
+
+- name: FunnyQuotesBasicWindows
+  random-route: true
+  memory: 512M
+  health-check-type: http
+  health-check-http-endpoint: /
+  buildpack: binary_buildpack
+  stack: windows2016
+  command: cmd /c .\FunnyQuotesBasicWindows --server.urls http://*:%PORT%
