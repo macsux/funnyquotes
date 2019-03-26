@@ -1,15 +1,13 @@
 ---
 applications:
 
-- name: FunnyQuotesServicesOwin
+- name: FunnyQuotesBasicPush
   random-route: true
   memory: 512M
   health-check-type: http
   health-check-http-endpoint: /
-  buildpack: hwc_buildpack
-  stack: windows2016
+  buildpack: dotnet_core_buildpack
   services:
-    - mysql-funnyquotes
     - eureka
     - hystrix
     - config-server
