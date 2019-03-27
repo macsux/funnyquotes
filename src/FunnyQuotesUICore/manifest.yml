@@ -7,7 +7,3 @@ applications:
   health-check-type: http
   health-check-http-endpoint: /
   buildpack: dotnet_core_buildpack
-  services:
-    - eureka
-    - hystrix
-    - config-server
