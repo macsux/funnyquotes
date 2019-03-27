@@ -189,6 +189,7 @@
     <Content Include="manifest.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Quotes.aspx" />
     <Content Include="Scripts\bootstrap.js" />
