@@ -6,7 +6,7 @@ namespace FunnyQuotesUIForms
 {
     public partial class Quotes : Page
     {
-        public IFunnyQuoteService FunnyQuoteService { get; set; }
+        public IFunnyQuoteService FunnyQuoteService { get; set; } = new LocalFunnyQuoteService();
 
 
         protected void Page_Load(object sender, EventArgs e)

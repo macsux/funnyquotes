@@ -163,13 +163,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="About.aspx" />
-    <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="css\foundation.css" />
+    <Content Include="css\normalize.css" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -182,13 +182,37 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="img\delete.jpeg" />
+    <Content Include="js\foundation.min.js" />
+    <Content Include="js\foundation\foundation.abide.js" />
+    <Content Include="js\foundation\foundation.accordion.js" />
+    <Content Include="js\foundation\foundation.alert.js" />
+    <Content Include="js\foundation\foundation.clearing.js" />
+    <Content Include="js\foundation\foundation.dropdown.js" />
+    <Content Include="js\foundation\foundation.interchange.js" />
+    <Content Include="js\foundation\foundation.joyride.js" />
+    <Content Include="js\foundation\foundation.js" />
+    <Content Include="js\foundation\foundation.magellan.js" />
+    <Content Include="js\foundation\foundation.offcanvas.js" />
+    <Content Include="js\foundation\foundation.orbit.js" />
+    <Content Include="js\foundation\foundation.reveal.js" />
+    <Content Include="js\foundation\foundation.tab.js" />
+    <Content Include="js\foundation\foundation.tooltip.js" />
+    <Content Include="js\foundation\foundation.topbar.js" />
+    <Content Include="js\foundation\jquery.cookie.js" />
+    <Content Include="js\jquery.js" />
+    <Content Include="js\modernizr.js" />
+    <Content Include="js\vendor\custom.modernizr.js" />
+    <Content Include="js\vendor\fastclick.js" />
+    <Content Include="js\vendor\jquery.autocomplete.js" />
+    <Content Include="js\vendor\jquery.cookie.js" />
+    <Content Include="js\vendor\jquery.js" />
+    <Content Include="js\vendor\placeholder.js" />
     <Content Include="Pivotal.Master" />
     <Content Include="manifest.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="appsettings.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Quotes.aspx" />
@@ -221,25 +245,10 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Web.config" />
-    <Content Include="Bundle.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="About.aspx.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="About.aspx.designer.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Contact.aspx.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contact.aspx.designer.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

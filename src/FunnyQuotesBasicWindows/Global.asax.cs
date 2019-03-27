@@ -1,15 +1,10 @@
 ﻿using Autofac;
 using Autofac.Integration.Web;
 using FunnyQuotesCommon;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web.Security;
-using System.Web.SessionState;
 
 namespace FunnyQuotesBasicWindows
 {
@@ -24,6 +19,10 @@ namespace FunnyQuotesBasicWindows
             var builder = new ContainerBuilder();
 
             builder.RegisterType<LocalFunnyQuoteService>().Named<IFunnyQuoteService>("local");
+            builder.Register(c =>
+            {
+                return c.ResolveNamed<IFunnyQuoteService>("local");
+            });
 
             var container = builder.Build();
 
