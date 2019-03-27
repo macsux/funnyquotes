@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using FunnyQuotesCommon;
+﻿using FunnyQuotesCommon;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +7,10 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace FunnyQuotesBasicLinux.Clients
 {
