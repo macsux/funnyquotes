@@ -1,9 +1,0 @@
----
-applications:
-
-- name: FunnyQuotesBasicLinux
-  random-route: true
-  memory: 512M
-  health-check-type: http
-  health-check-http-endpoint: /
-  buildpack: dotnet_core_buildpack
