@@ -32,40 +32,8 @@ namespace FunnyQuotesUIForms.Clients
 
         public string GetCookieRun()
         {
-            try
-            {
-                var endpointAddress = _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf");
-
-                Console.WriteLine("URI: " + endpointAddress.Uri.ToString());
-                var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", endpointAddress);
-                var result = channelFactory.CreateChannel().GetQuoteAsync().Result;
-
-                Console.WriteLine("RESULT: " + result);
-                return result;
-            }
-            catch (FaultException ex)
-            {
-                Console.WriteLine("FAULT: " + ex.ToString());
-
-                return null;
-            }
-            catch (AggregateException ex)
-            {
-                Console.WriteLine("AGGEX: " + ex.ToString());
-                Console.WriteLine("INNEREX: " + ex.InnerException.ToString());
-
-                foreach (var x in ex.InnerExceptions)
-                {
-                    Console.WriteLine("INNNER: " + x.ToString());
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR: " + ex.ToString());
-                return null;
-            }
+            var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf"));
+            return channelFactory.CreateChannel().GetQuoteAsync().Result;
         }
 
         public string GetCookieFallback() => _config.Value.FailedMessage;
