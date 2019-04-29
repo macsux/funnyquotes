@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunnyQuotesUICore", "FunnyQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesServicesOwin", "FunnyQuotesServicesOwin\FunnyQuotesServicesOwin.csproj", "{30F209AC-A83A-413C-97BF-A50E05122EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunnyQuotesCommon", "FunnyQuotesCommon\FunnyQuotesCommon.csproj", "{A570EDD6-01EF-4D5E-9705-527BCD565CEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunnyQuotesCommon", "FunnyQuotesCommon\FunnyQuotesCommon.csproj", "{A570EDD6-01EF-4D5E-9705-527BCD565CEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

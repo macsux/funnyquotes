@@ -354,6 +354,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json" />
+    <Content Include="manifest.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
