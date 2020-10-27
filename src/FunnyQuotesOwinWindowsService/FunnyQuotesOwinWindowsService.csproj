@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F6A938CB-0FE2-4CC6-A88C-8358B9FC074E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>FunnyQuotesOwinWindowsService</RootNamespace>
+    <AssemblyName>FunnyQuotesOwinWindowsService</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Authentication\NoAuthenticationMiddleware.cs" />
+    <Compile Include="Authentication\NoopAuthorizationEvaluator.cs" />
+    <Compile Include="Controllers\FunnyQuotesController.cs" />
+    <Compile Include="Controllers\HealthController.cs" />
+    <Compile Include="ExceptionFilterAttribute.cs" />
+    <Compile Include="OwinWebHost.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Service1.Designer.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="ValuesController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac.WebApi2.Owin">
+      <Version>6.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="EntityFramework">
+      <Version>6.4.4</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost">
+      <Version>5.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json">
+      <Version>3.1.9</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console">
+      <Version>3.1.9</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Owin.Cors">
+      <Version>4.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.CloudFoundry.ConnectorAutofac">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.Discovery.ClientAutofac">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryAutofac">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerBase">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.Management.EndpointOwinAutofac">
+      <Version>2.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryOwin">
+      <Version>2.5.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\config\application.yaml">
+      <Link>global-default.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\config\FunnyQuotesOwinWindowsService.yaml">
+      <Link>appsettings.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\config\FunnyQuotesOwinWindowsService-Development.yaml">
+      <Link>appsettings.Development.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FunnyQuotesCommon\FunnyQuotesCommon.csproj">
+      <Project>{a570edd6-01ef-4d5e-9705-527bcd565cea}</Project>
+      <Name>FunnyQuotesCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FunnyQuotesCookieDatabase\FunnyQuotesCookieDatabase.csproj">
+      <Project>{85026d53-291d-4b8c-a7b8-37a9952267c1}</Project>
+      <Name>FunnyQuotesCookieDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FunnyQuotesLegacyCommon\FunnyQuotesLegacyCommon.csproj">
+      <Project>{49bd6b18-07eb-437b-850c-496aa88276bc}</Project>
+      <Name>FunnyQuotesLegacyCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

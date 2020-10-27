@@ -4,7 +4,7 @@ using FunnyQuotesCommon;
 
 namespace FunnyQuotesCookieDatabase.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<FunnyQuotesCookieDbContext>
+    public sealed class Configuration : DbMigrationsConfiguration<FunnyQuotesCookieDbContext>
     {
         public Configuration()
         {

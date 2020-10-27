@@ -1,0 +1,5 @@
+MySql:
+  Client:
+    Server: localhost
+    Username: root
+    Database: funnyquotes

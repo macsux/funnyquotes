@@ -1,0 +1,37 @@
+Spring:
+  Cloud:
+    Config:
+      ValidateCertificates: false
+Logging:
+  IncludeScopes: true
+  LogLevel:
+    Default: Trace
+    Steeltoe.CircuitBreaker.Hystrix.MetricsStream.RabbitMetricsStreamPublisher: None
+Eureka:
+  Client:
+    ValidateCertificates: false
+  Instance:
+    HostName: localhost
+Security:
+  Oauth2:
+    Client:
+      ValidateCertificates: false
+Management:
+  Endpoints:
+    Actuator:
+      Exposure:
+        Include: ["*"]
+    Path: /cloudfoundryapplication
+    CloudFoundry:
+      ValidateCertificates: false
+#  Tracing:
+#    UseShortTraceIds: true
+#    AlwaysSample: true
+#  Metrics:
+#    Exporter:
+#      CloudFoundry:
+#        ValidateCertificates: false
+
+FunnyQuotes:
+  EnableSecurity: false
+  FailedMessage: Failure is not an option -- it comes bundled with Windows.

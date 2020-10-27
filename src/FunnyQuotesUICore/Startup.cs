@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Security.Claims;
 using FunnyQuotesCommon;
 using FunnyQuotesUICore.Clients;
 using FunnyQuotesUICore.Security;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Pivotal.Discovery.Client;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Http.Discovery;
+using Steeltoe.Discovery.Client;
 using Steeltoe.Management.CloudFoundry;
 using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
@@ -31,7 +32,7 @@ namespace FunnyQuotesUICore
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider  ConfigureServices(IServiceCollection services)
+        public void  ConfigureServices(IServiceCollection services)
         {
             // while we're registering FunnyQuotesConfiguration as part of .Configure call, we need that data now
             // as we're making registration decisions. We manually gonna create an instance and map it on to config
@@ -41,7 +42,6 @@ namespace FunnyQuotesUICore
                                                                                        // alternatively can do the same thing by POSTing to /refresh endpoint
             services.AddMvc();
             services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
-            services.AddHystrixMetricsStream(Configuration); // stream metrics telemetry to a hystrix stream
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
             services.AddDistributedTracing(Configuration); //
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
@@ -49,6 +49,7 @@ namespace FunnyQuotesUICore
             services.AddLogging(); // can inject ILogger<T> 
             services.AddSingleton<LocalFunnyQuoteService>();
             services.AddScoped<RestFunnyQuotesClient>();
+            services.AddScoped<WcfFunnyQuotesClient>();
             
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes")); // adds typed configuration object and map it to a section of config
@@ -61,6 +62,8 @@ namespace FunnyQuotesUICore
                 var implType = config.Value.ClientType;
                 if (implType == "rest")
                     return provider.GetService<RestFunnyQuotesClient>();
+                if (implType == "wcf")
+                    return provider.GetService<WcfFunnyQuotesClient>();
                 return provider.GetService<LocalFunnyQuoteService>();
 
             });
@@ -68,17 +71,20 @@ namespace FunnyQuotesUICore
             {
                 client.BaseAddress = new Uri("http://FunnyQuotesServicesOwin/api/FunnyQuotes/");
             }).AddHttpMessageHandler<DiscoveryHttpMessageHandler>(); // use eureka integration with all HttpClient objects
-
+            services.AddSingleton<IAuthenticationSchemeProvider, FeatureToggleAuthenticationSchemeProvider>();
 
             
             // add OAuth2 sign in scheme
             var authBuilder = services
+                
                 .AddAuthentication(options =>
                 {
                     options.DefaultScheme = CloudFoundryDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = CloudFoundryDefaults.AuthenticationScheme;
                 })
-                .AddCookie((options) => { options.AccessDeniedPath = new PathString("/Home/AccessDenied"); });
+                .AddCookie((options) => { options.AccessDeniedPath = new PathString("/Home/AccessDenied"); })
+                .AddCloudFoundryOAuth(Configuration)
+                .Toggleable();
                 
             services.AddAuthorization(options =>
             {
@@ -87,29 +93,24 @@ namespace FunnyQuotesUICore
             });
             
             // use CF SSO if security is enabled
-            if (funnyquotesConfig.EnableSecurity)
-            {
-                authBuilder.AddCloudFoundryOAuth(Configuration);
-            }
-            else
-            {
-                // if security is disabled, add dummy auth processors.
-                // This is necessary because controller's [Authorize] attributes will throw if no auth provider is registered
-                authBuilder.AddNoSecurity();
-                services.NoAuthorization();
-
-            }
-            return services.BuildServiceProvider(validateScopes: true);
-
+            // if (funnyquotesConfig.EnableSecurity)
+            // {
+            //     authBuilder.AddCloudFoundryOAuth(Configuration);
+            // }
+            // else
+            // {
+            //     // if security is disabled, add dummy auth processors.
+            //     // This is necessary because controller's [Authorize] attributes will throw if no auth provider is registered
+            //     authBuilder.AddToggleableSecurity();
+            // }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -123,19 +124,21 @@ namespace FunnyQuotesUICore
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedProto
             });
-            app.UseAuthentication();
             
-            app.UseCloudFoundryActuators(); // creates the route maps in the MVC stack for actuators
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
             app.UseHystrixRequestContext(); // allows request context to be accessible within hystrix execution model.
                                             // this is necessary because there's some thread switching happening
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
-            });
-            app.UseHystrixMetricsStream(); // start publishing hystrix metric stream 
-            app.UseDiscoveryClient(); // start eureka client and connect to the registry server to fetch registry
+
             
         }
     }

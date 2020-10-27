@@ -83,7 +83,7 @@ namespace FunnyQuotesServicesOwin
                     "api/{controller}/{action}"
                 );
                 httpConfig.Routes.MapHttpRoute("Health", 
-                    "{controller}/{action}", 
+                    "health", 
                     new { controller = "health", action = "health" }); // map "/" to basic health endpoint so the default PCF health check for HTTP 200 response is satisfied 
                 httpConfig.DependencyResolver = new AutofacWebApiDependencyResolver(container); // assign autofac to provide dependency injection on controllers
                 

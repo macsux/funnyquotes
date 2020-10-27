@@ -3,7 +3,6 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
 

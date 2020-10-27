@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using FunnyQuotesCommon;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Pivotal.Extensions.Configuration.ConfigServer;
+using Microsoft.Extensions.Logging.Console;
+using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Extensions.Logging;
 
 namespace FunnyQuotesUICore
@@ -18,8 +21,12 @@ namespace FunnyQuotesUICore
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseCloudFoundryHosting()
-                .AddConfigServer()
+                .ConfigureAppConfiguration((ctx, cfg) =>
+                {
+                    cfg.Sources.Clear();
+                    cfg.AddLocalConfigFiles(ctx.HostingEnvironment.EnvironmentName);
+                    cfg.AddConfigServer();
+                })
                 .UseStartup<Startup>()
                 .ConfigureLogging((builderContext, loggingBuilder) =>
                 {

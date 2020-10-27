@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Net;
 using System.Web;
 using Autofac;
 using Autofac.Integration.Web;
+using FunnyQuotes;
 using FunnyQuotesCommon;
 using FunnyQuotesUIForms.Clients;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
-using Pivotal.Discovery.Client;
-using Pivotal.Extensions.Configuration.ConfigServer;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Configuration.Autofac;
 using Steeltoe.Common.HealthChecks;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
+using Steeltoe.Discovery.Client;
+using Steeltoe.Discovery.Eureka;
+using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Extensions.Logging;
 using Steeltoe.Management.Endpoint.Health.Contributor;
 
@@ -35,38 +33,30 @@ namespace FunnyQuotesUIForms
             try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-                var logFactory = new LoggerFactory();
-                logFactory.AddConsole(LogLevel.Information);
-                var logger = logFactory.CreateLogger(nameof(Global));
-                var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
-                var config = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", false, false)
-                    .AddJsonFile($"appsettings.{env}.json", true)
-                    .AddConfigServer(env, logFactory)
-                    .AddEnvironmentVariables()
-                    .Build()
-                    .AutoRefresh(TimeSpan.FromSeconds(10));
+                
+                var logger = StartupHelper.BootstrapLogger;
+                var config = StartupHelper.Configuration;
 
                 var builder = new ContainerBuilder();
                 builder.RegisterConfiguration(config);
                 builder.RegisterOptions();
                 builder.RegisterOption<FunnyQuotesConfiguration>(config.GetSection("FunnyQuotes"));
                 builder.RegisterDiscoveryClient(config);
+                
                 builder.RegisterLogging(config); // allow loggers to be injectable by AutoFac
-                builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(config))) // add SteelToe dynamic logger. works similar to
-                    .AsSelf()                                                                                             // console logger, but allows log levels to be altered 
-                    .As<ILoggerProvider>()
-                    .SingleInstance();                                                                               // via management endpoints
+                builder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>().AsSelf(); // via management endpoints
                 builder.RegisterHystrixMetricsStream(config);
+                
                 builder.RegisterType<DiskSpaceContributor>().As<IHealthContributor>();
+                builder.RegisterType<ConfigServerHealthContributor>().As<IHealthContributor>();
+                builder.RegisterType<EurekaApplicationsHealthContributor>().As<IHealthContributor>();
+                builder.RegisterType<EurekaServerHealthContributor>().As<IHealthContributor>();
                 
                 // register 4 different implementations of IFunnyQuoteService and assign them unique names
                 builder.RegisterType<AsmxFunnyQuotesClient>().Named<IFunnyQuoteService>("asmx");
                 builder.RegisterType<WcfFunnyQuotesClient>().Named<IFunnyQuoteService>("wcf");
                 builder.RegisterType<LocalFunnyQuoteService>().Named<IFunnyQuoteService>("local");
                 builder.RegisterType<RestFunnyQuotesClient>().Named<IFunnyQuoteService>("rest");
-//                builder.RegisterCloudFoundryActuators(config);
                 // register dynamic resolution of implementation of IFunnyQuoteService based on named implementation defined in the config
                 builder.Register(c =>
                 {
@@ -80,7 +70,7 @@ namespace FunnyQuotesUIForms
                 container.StartActuators(); // map routes for actuator endpoints
                 _containerProvider = new ContainerProvider(container); // setup autofac WebForms integration
                 
-                logger.LogInformation(">> FunnyQuotesLegacyUI Started<<");
+                logger.LogInformation(">> FunnyQuotesLegacyUI Started <<");
             }
             catch (Exception exception)
             {

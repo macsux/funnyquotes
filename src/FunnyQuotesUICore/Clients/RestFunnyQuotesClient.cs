@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
+using Steeltoe.Discovery;
 
 namespace FunnyQuotesUICore.Clients
 {

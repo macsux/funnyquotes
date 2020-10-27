@@ -6,7 +6,7 @@ using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesCommon
 {
-    public class EndpointClientHandler : DiscoveryHttpClientHandler
+    public class EndpointClientHandler : DiscoveryHttpClientHandlerBase
     {
         public EndpointClientHandler(IDiscoveryClient client) : base(client)
         {

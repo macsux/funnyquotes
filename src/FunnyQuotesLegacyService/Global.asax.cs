@@ -5,17 +5,17 @@ using System.Web;
 using Autofac;
 using Autofac.Integration.Wcf;
 using Autofac.Integration.Web;
+using FunnyQuotes;
 using FunnyQuotesCookieDatabase;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Pivotal.Discovery.Client;
+using static Steeltoe.CloudFoundry.Connector.EF6Autofac.MySqlDbContextContainerBuilderExtensions;
 using Steeltoe.CloudFoundry.ConnectorAutofac;
 using Steeltoe.Common.Configuration.Autofac;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
-using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Discovery.Client;
 using Steeltoe.Extensions.Logging;
+using Steeltoe.Management.EndpointOwinAutofac;
 
 namespace FunnyQuotesLegacyService
 {
@@ -32,32 +32,30 @@ namespace FunnyQuotesLegacyService
 
         private void Application_Start(object sender, EventArgs e)
         {
-            var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
-            ApplicationConfig.RegisterConfig(env);
+
+            var configuration = StartupHelper.Configuration;
             var builder = new ContainerBuilder();
-            builder.RegisterConfiguration(ApplicationConfig.Configuration);
-            builder.RegisterLogging(ApplicationConfig.Configuration);
+            
+            builder.RegisterConfiguration(configuration);
+            builder.RegisterCloudFoundryActuators(configuration);
+            builder.RegisterLogging(configuration);
+            builder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>();
             builder.RegisterOptions();
-            builder.RegisterDiscoveryClient(ApplicationConfig.Configuration);
-            builder.Register(ctx => new DynamicLoggerProvider(new ConsoleLoggerSettings().FromConfiguration(ApplicationConfig.Configuration))) // add SteelToe dynamic logger. works similar to
-                .AsSelf()                                                                                                                      // console logger, but allows log levels to be altered 
-                .As<ILoggerProvider>()
-                .SingleInstance(); 
-            builder.RegisterMySqlConnection(ApplicationConfig.Configuration);
-            builder.Register(ctx =>
-            {
-                var connString = ctx.Resolve<IDbConnection>().ConnectionString;
-                return new FunnyQuotesCookieDbContext(connString);
-            });
+            builder.RegisterDiscoveryClient(configuration);
+            builder.RegisterMySqlConnection(configuration);
+            builder.RegisterDbContext<FunnyQuotesCookieDbContext>(configuration);
             builder.RegisterType<FunnyQuoteServiceWcf>();
             var container = builder.Build();
             container.StartActuators();
+            // container.StartActuators();
             // ensure that discovery client component starts up
             container.StartDiscoveryClient();
             // force db opeartion so db gets created on startup
-            container.Resolve<FunnyQuotesCookieDbContext>().FunnyQuotes.Load();
+            // container.Resolve<FunnyQuotesCookieDbContext>().FunnyQuotes.Load();
+            container.MigrateDatabase();
             _containerProvider = new ContainerProvider(container);
             AutofacHostFactory.Container = container;
+
         }
 
         private void Application_Error(object sender, EventArgs e)

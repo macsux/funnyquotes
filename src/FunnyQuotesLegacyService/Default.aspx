@@ -9,7 +9,8 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            
+                 <a runat="server" href="~/FunnyQuoteserviceLegacy.asmx">ASMX service</a>
+                 <a runat="server"  href="~/FunnyQuoteserviceWCF.svc">WCF service</a>   
         </div>
     </form>
 </body>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using FunnyQuotesUIForms.FunnyQuotesLegacyService;
@@ -12,12 +11,12 @@ namespace FunnyQuotesUIForms.Clients
     public class AsmxFunnyQuotesClient : IFunnyQuoteService
     {
         private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
-        private readonly DiscoveryHttpClientHandler _dicoveryAddressResolver;
+        private readonly DiscoveryHttpClientHandlerBase _dicoveryAddressResolver;
 
         public AsmxFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config)
         {
             _config = config;
-            _dicoveryAddressResolver = new DiscoveryHttpClientHandler(discoveryClient);
+            _dicoveryAddressResolver = new DiscoveryHttpClientHandlerBase(discoveryClient);
         }
 
         public string GetQuote()

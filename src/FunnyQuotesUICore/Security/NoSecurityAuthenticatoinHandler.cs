@@ -12,6 +12,10 @@ using Microsoft.Extensions.Options;
 
 namespace FunnyQuotesUICore.Security
 {
+    public class NoSecurityDefaults
+    {
+        public const string AuthenticationScheme = "noauth";
+    }
     public class NoSecurityAuthenticatoinHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public NoSecurityAuthenticatoinHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)

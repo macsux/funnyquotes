@@ -1,40 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" />
-    <PackageReference Include="Pivotal.Discovery.ClientCore" Version="2.1.0" />
-    <PackageReference Include="Pivotal.Extensions.Configuration.ConfigServerCore" Version="2.1.0" />
-    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
-    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="2.1.0" />
-    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="2.1.0" />
-    <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="2.1.0" />
-    <PackageReference Include="Steeltoe.Management.TracingCore" Version="2.1.0" />
-    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryCore" Version="2.1.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Management.TracingCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Security.Authentication.CloudFoundryCore" Version="3.0.1" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FunnyQuotesCommon\FunnyQuotesCommon.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="appsettings.Development.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    <Content Include="..\..\config\application.yaml">
+      <Link>global-default.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="appsettings.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="..\..\config\FunnyQuotesUICore.yaml">
+      <Link>appsettings.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Views\Home\Index.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    <Content Include="..\..\config\FunnyQuotesUICore-Development.yaml">
+      <Link>appsettings.Development.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  
   <ItemGroup>
     <None Update="manifest.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 </Project>
