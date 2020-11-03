@@ -1,7 +1,9 @@
 ﻿using System;
 using FunnyQuotesCommon;
+
 using FunnyQuotesUICore.Clients;
 using FunnyQuotesUICore.Security;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,10 +14,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Management.CloudFoundry;
+using Steeltoe.Management.Endpoint;
 using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
@@ -43,7 +47,7 @@ namespace FunnyQuotesUICore
             services.AddMvc();
             services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
-            services.AddDistributedTracing(Configuration); //
+            services.AddDistributedTracing(Configuration, builder => builder.UseZipkinWithTraceOptions(services)); //
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // .net core way of accessing current http context (legacy HttpContext.Current)
             services.AddLogging(); // can inject ILogger<T> 
@@ -131,6 +135,8 @@ namespace FunnyQuotesUICore
             
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAllActuators();
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
