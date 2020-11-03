@@ -24,9 +24,13 @@ Management:
     Path: /cloudfoundryapplication
     CloudFoundry:
       ValidateCertificates: false
-#  Tracing:
-#    UseShortTraceIds: true
-#    AlwaysSample: true
+  Tracing:
+    exporter:
+      zipkin:
+        UseShortTraceIds: true
+        AlwaysSample: true
+        ValidateCertificates: false
+        Endpoint: http://wavefront-proxy.apps.internal:9411/api/v2/spans
 #  Metrics:
 #    Exporter:
 #      CloudFoundry:
