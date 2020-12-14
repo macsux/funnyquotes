@@ -20,6 +20,7 @@ using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Management.CloudFoundry;
 using Steeltoe.Management.Endpoint;
+using Steeltoe.Management.Endpoint.Metrics;
 using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
@@ -45,6 +46,7 @@ namespace FunnyQuotesUICore
             ((IConfigurationRoot)Configuration).AutoRefresh(TimeSpan.FromSeconds(10)); // start a background timer thread to update config every 10 seconds
                                                                                        // alternatively can do the same thing by POSTing to /refresh endpoint
             services.AddMvc();
+            services.AddPrometheusActuator();
             services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
             services.AddDistributedTracing(Configuration, builder => builder.UseZipkinWithTraceOptions(services)); //
@@ -132,11 +134,9 @@ namespace FunnyQuotesUICore
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAllActuators();
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

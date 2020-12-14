@@ -1,0 +1,3 @@
+wavefront-tenant: vmware
+wavefront-token: ba582ea2-ce08-4c19-a753-f53e3d5ce65d
+scrape_urls: '"http://observability.apps.internal/prometheus"'

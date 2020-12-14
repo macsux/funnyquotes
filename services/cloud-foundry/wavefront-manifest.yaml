@@ -1,0 +1,21 @@
+---
+applications:
+- name: wavefront-proxy
+  health-check-type: process
+  docker:
+    image: wavefronthq/proxy:latest
+  routes:
+  - route: my-wavefront-proxy.apps.internal
+  env:
+    WAVEFRONT_URL: https://((wavefront-tenant)).wavefront.com/
+    WAVEFRONT_TOKEN: ((wavefront-token))
+    WAVEFRONT_PROXY_ARGS: --traceZipkinListenerPorts 9411
+- name: telegraf
+  health-check-type: process
+  buildpacks:
+  - binary_buildpack
+  path: telegraf
+  command: ./run.sh
+  no-route: true
+  env:
+    URLS: ((scrape_urls))

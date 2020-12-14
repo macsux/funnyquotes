@@ -5,7 +5,7 @@ Spring:
 Logging:
   IncludeScopes: true
   LogLevel:
-    Default: Trace
+    Default: Information
     Steeltoe.CircuitBreaker.Hystrix.MetricsStream.RabbitMetricsStreamPublisher: None
 Eureka:
   Client:
@@ -21,16 +21,16 @@ Management:
     Actuator:
       Exposure:
         Include: ["*"]
-    Path: /cloudfoundryapplication
+    #Path: /cloudfoundryapplication
     CloudFoundry:
       ValidateCertificates: false
   Tracing:
-    exporter:
-      zipkin:
+    Exporter:
+      Zipkin:
         UseShortTraceIds: true
         AlwaysSample: true
         ValidateCertificates: false
-        Endpoint: http://wavefront-proxy.apps.internal:9411/api/v2/spans
+        Endpoint: http://localhost:9411/api/v2/spans
 #  Metrics:
 #    Exporter:
 #      CloudFoundry:
