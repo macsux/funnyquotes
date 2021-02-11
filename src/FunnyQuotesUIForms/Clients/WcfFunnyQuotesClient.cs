@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
@@ -11,11 +12,13 @@ namespace FunnyQuotesUIForms.Clients
     public class WcfFunnyQuotesClient : IFunnyQuoteService
     {
         private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
+        private readonly ILogger<WcfFunnyQuotesClient> _logger;
         private readonly EndpointClientHandler _dicoveryAddressResolver;
 
-        public WcfFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config)
+        public WcfFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config, ILogger<WcfFunnyQuotesClient> logger)
         {
             _config = config;
+            _logger = logger;
             _dicoveryAddressResolver = new EndpointClientHandler(discoveryClient);
         }
 
@@ -31,8 +34,16 @@ namespace FunnyQuotesUIForms.Clients
 
         public string GetCookieRun()
         {
-            var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf"));
-            return channelFactory.CreateChannel().GetQuoteAsync().Result;
+            try
+            {
+                var channelFactory = new ChannelFactory<IFunnyQuoteService>("FunnyQuoteServiceWcf", _dicoveryAddressResolver.GetEndpointAddress("FunnyQuoteServiceWcf"));
+                return channelFactory.CreateChannel().GetQuoteAsync().Result;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error connecting to backend service");
+                throw;
+            }
         }
 
         public string GetCookieFallback() => _config.Value.FailedMessage;

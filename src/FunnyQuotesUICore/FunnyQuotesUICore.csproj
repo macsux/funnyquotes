@@ -6,6 +6,7 @@
     <PackageReference Include="Polly" Version="7.2.1" />
     <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.TracingCore" Version="3.0.1" />
@@ -21,6 +22,10 @@
   <ItemGroup>
     <Content Include="..\..\config\application.yaml">
       <Link>global-default.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\config\application-Development.yaml">
+      <Link>global-default.Development.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\config\FunnyQuotesUICore.yaml">

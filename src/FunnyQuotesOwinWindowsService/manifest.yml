@@ -1,0 +1,10 @@
+---
+applications:
+
+- name: FunnyQuotesOwinWindowsService
+  random-route: true
+  memory: 512M
+  health-check-type: http
+  health-check-http-endpoint: /
+  buildpack: https://github.com/macsux/cf-buildpack-windows-services/releases/download/v3.0.1/WindowsServicesBuildpack-win-x64-3.0.1.zip
+  stack: windows

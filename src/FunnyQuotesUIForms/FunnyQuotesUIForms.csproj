@@ -464,7 +464,11 @@
       <Link>appsettings.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    
+    <Content Include="..\..\config\FunnyQuotesUIForms-Development.yaml">
+      <Link>appsettings.Development.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>    
     <Content Include="appsettings.json" />
     
     <Content Include="Dockerfile" />
@@ -608,6 +612,9 @@
       <Project>{49bd6b18-07eb-437b-850c-496aa88276bc}</Project>
       <Name>FunnyQuotesLegacyCommon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Steeltoe.Management.EndpointOwinAutofac" Version="2.5.2" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
