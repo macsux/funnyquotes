@@ -1,0 +1,23 @@
+<Project>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    </PropertyGroup>
+
+    <Target Name="Clean" />
+    <Target Name="Rebuild" />
+    <Target Name="Build"/>
+    <Target Name="Restore"/>
+    <Target Name="BeforeBuild"/>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+ 
+    <Target Name="Clean" />
+    <Target Name="Rebuild" />
+    <Target Name="Build"/>
+    <Target Name="Restore"/>
+    <Target Name="BeforeBuild"/>
+
+    
+
+</Project>

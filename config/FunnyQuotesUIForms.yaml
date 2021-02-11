@@ -1,9 +1,9 @@
 Spring:
   Application:
     Name: FunnyQuotesUIForms
-FunnyQuotes:
-  ClientType: wcf
 Eureka:
   Client:
     HealthMonitoredApps: FunnyQuotesOwinWindowsService,FunnyQuotesLegacyService
+    ShouldRegisterWithEureka: false
+    ValidateCertificates: false
     

@@ -4,3 +4,4 @@ Spring:
 Eureka:
   Client:
     HealthMonitoredApps: FunnyQuotesOwinWindowsService,FunnyQuotesLegacyService
+    ShouldRegisterWithEureka: false

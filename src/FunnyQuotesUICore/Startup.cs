@@ -20,6 +20,7 @@ using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Management.CloudFoundry;
 using Steeltoe.Management.Endpoint;
+using Steeltoe.Management.Endpoint.CloudFoundry;
 using Steeltoe.Management.Endpoint.Metrics;
 using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
@@ -45,9 +46,7 @@ namespace FunnyQuotesUICore
             Configuration.GetSection("FunnyQuotes").Bind(funnyquotesConfig);
             ((IConfigurationRoot)Configuration).AutoRefresh(TimeSpan.FromSeconds(10)); // start a background timer thread to update config every 10 seconds
                                                                                        // alternatively can do the same thing by POSTing to /refresh endpoint
-            services.AddMvc();
             services.AddPrometheusActuator();
-            services.AddCloudFoundryActuators(Configuration); // enable all actuators on /cloudfoundryapplication endpoint that integrate with CF with enabled security
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
             services.AddDistributedTracing(Configuration, builder => builder.UseZipkinWithTraceOptions(services)); //
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
@@ -75,7 +74,7 @@ namespace FunnyQuotesUICore
             });
             services.AddHttpClient<RestFunnyQuotesClient.GetQuoteCommand>(client =>
             {
-                client.BaseAddress = new Uri("http://FunnyQuotesServicesOwin/api/FunnyQuotes/");
+                client.BaseAddress = new Uri("http://FunnyQuotesOwinWindowsService/api/FunnyQuotes/");
             }).AddHttpMessageHandler<DiscoveryHttpMessageHandler>(); // use eureka integration with all HttpClient objects
             services.AddSingleton<IAuthenticationSchemeProvider, FeatureToggleAuthenticationSchemeProvider>();
 
@@ -97,24 +96,13 @@ namespace FunnyQuotesUICore
                 options.AddPolicy("authenticated", policy => policy.RequireClaim("scope","openid"));
                 options.AddPolicy("elevated", policy => policy.RequireClaim("scope", "kill"));
             });
+            services.AddControllersWithViews();
             
-            // use CF SSO if security is enabled
-            // if (funnyquotesConfig.EnableSecurity)
-            // {
-            //     authBuilder.AddCloudFoundryOAuth(Configuration);
-            // }
-            // else
-            // {
-            //     // if security is disabled, add dummy auth processors.
-            //     // This is necessary because controller's [Authorize] attributes will throw if no auth provider is registered
-            //     authBuilder.AddToggleableSecurity();
-            // }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -130,13 +118,12 @@ namespace FunnyQuotesUICore
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedProto
             });
-            
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapAllActuators();
+                // endpoints.MapAllActuators();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

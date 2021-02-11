@@ -3,3 +3,6 @@ MySql:
     Server: localhost
     Username: root
     Database: funnyquotes
+Eureka:
+  Instance:
+    NonSecurePort: 8080

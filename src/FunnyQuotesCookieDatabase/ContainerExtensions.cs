@@ -13,6 +13,7 @@ namespace FunnyQuotesCookieDatabase
             var logger = container.Resolve<ILoggerFactory>().CreateLogger("Startup.DatabaseMigrator");
             var db = container.Resolve<FunnyQuotesCookieDbContext>();
             var migrator = new DbMigrator(new FunnyQuotesCookieDatabase.Migrations.Configuration(), db);
+            logger.LogInformation("Using {ConnectionType} connected to {ConnectionString}",db.Database.Connection.GetType().Name, db.Database.Connection.ConnectionString);
             // dynamic databaseCreator = Type.GetType("System.Data.Entity.Migrations.Utilities.DatabaseCreator, EntityFramework");
             bool dbExists = db.Database.Exists();
 
@@ -25,14 +26,14 @@ namespace FunnyQuotesCookieDatabase
                 return;
             }
             if(!dbExists)
-                logger.LogInformation($"Creating database '{db.Database.Connection.Database}'");
+                logger.LogInformation("Creating database '{DatabaseName}'", db.Database.Connection.Database);
             logger.LogInformation("Applying the following migrations:");
 
             foreach (var migration in pendingMigrations)
             {
-                logger.LogInformation($"- {migration}");
+                logger.LogInformation("- {MigrationName}", migration);
             }
-            
+            migrator.Update();
             logger.LogInformation("Database successfully migrated");
         }
     }

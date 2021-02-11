@@ -18,10 +18,6 @@ Security:
       ValidateCertificates: false
 Management:
   Endpoints:
-    Actuator:
-      Exposure:
-        Include: ["*"]
-    #Path: /cloudfoundryapplication
     CloudFoundry:
       ValidateCertificates: false
   Tracing:

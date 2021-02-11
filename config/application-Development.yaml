@@ -1,3 +1,14 @@
 Logging:
   LogLevel:
     Default: Information
+MySql:
+  Client:
+    Server: localhost
+    Database: funny-quotes
+    Username: root
+    Password: ""
+Management:
+  Endpoints:
+    Actuator:
+      Exposure:
+        Include: ["*"]

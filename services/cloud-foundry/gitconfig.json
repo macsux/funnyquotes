@@ -1,5 +1,6 @@
 {
     "git" : { 
-        "uri": "https://github.com/tanzu-solutions-engineering/funny-quotes-config"
+        "uri": "https://github.com/macsux/funnyquotes",
+        "searchPaths": "config"
     }
 }
