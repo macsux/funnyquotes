@@ -10,7 +10,7 @@ namespace FunnyQuotesUIForms.Clients
 {
     public class RestFunnyQuotesClient : IFunnyQuoteService
     {
-        private const string RANDOM_FunnyQuotes_URL = "http://FunnyQuotesServicesOwin/api/FunnyQuotes/random";
+        private const string RANDOM_FunnyQuotes_URL = "http://FunnyQuotesOwinWindowsService/api/FunnyQuotes/random";
         private readonly DiscoveryHttpClientHandler _handler;
 
         public RestFunnyQuotesClient(IDiscoveryClient client)

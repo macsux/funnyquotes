@@ -1,3 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>253b4767-bfcd-4446-87fe-e23d32607789</ProjectGuid>
+  </PropertyGroup>
 </Project>

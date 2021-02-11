@@ -28,6 +28,7 @@ namespace FunnyQuotesCommon
 
             configurationBuilder
                 .AddYamlFile(Path.Combine(path, "global-default.yaml"), true)
+                .AddYamlFile(Path.Combine(path, "global-default.Development.yaml"), true)
                 .AddYamlFile(Path.Combine(path, "appsettings.yaml"), false)
                 .AddYamlFile(Path.Combine(path, $"appsettings.{environment}.yaml"), true);
             return configurationBuilder;

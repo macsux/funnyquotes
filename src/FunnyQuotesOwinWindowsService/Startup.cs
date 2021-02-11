@@ -39,7 +39,6 @@ namespace FunnyQuotesOwinWindowsService
             try
             {
                 var httpConfig = new HttpConfiguration(); 
-                var env = Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development"; // standard variable in asp.net core for environment declaration
 
                 var config = StartupHelper.Configuration;
                 // var funnyQuotesConfig = new FunnyQuotesConfiguration();

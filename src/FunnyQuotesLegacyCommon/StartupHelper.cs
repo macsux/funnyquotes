@@ -54,7 +54,7 @@ namespace FunnyQuotes
                 .AddEnvironmentVariables()
                 .Build()
                 .AutoRefresh(TimeSpan.FromSeconds(10)));
-        public static string Environment => System.Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "development";
+        public static string Environment => System.Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "Production";
         public static ILogger BootstrapLogger => _bootstrapLogger.Value;
         public static IConfiguration Configuration => _configuration.Value;
         
@@ -65,7 +65,7 @@ namespace FunnyQuotes
             var healthContributors = container.Resolve<IEnumerable<IHealthContributor>>();
             container.TryResolve<IApiExplorer>(out var apiExplorer);
             var loggerFactory = container.Resolve<ILoggerFactory>();
-            ActuatorConfigurator.UseAllActuators(configuration, dynamicLogger, healthContributors, apiExplorer, loggerFactory);
+            ActuatorConfigurator.UseAllActuators(configuration, dynamicLogger, MediaTypeVersion.V2, ActuatorContext.ActuatorAndCloudFoundry, healthContributors, apiExplorer, loggerFactory);
         }
 
         
