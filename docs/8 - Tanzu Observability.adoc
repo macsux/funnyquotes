@@ -1,0 +1,211 @@
+== Prerequisites
+
+[arabic]
+. TAS platform that has
+https://docs.pivotal.io/platform/application-service/2-9/devguide/deploy-apps/push-docker.html[Docker
+cf push enabled].
+. This solution utilizes a TAS platform with
+https://docs.pivotal.io/platform/application-service/2-9/devguide/deploy-apps/cf-networking.html[Container-to-container
+networking] enabled. While this configuration is preferred it is not
+explicitly required.
++
+_Note: In this solution all of the applications are deployed to the
+internal domain of apps.internal. If your internal domain is different
+please adjust the routes accordingly_
+
+== Wavefront Proxy Deployment
+
+[arabic]
+. Navigate to the src/Wavefront-Proxy folder and inspect the
+manifest.yml file.
+. Update the following environment variables in the manifest.yml file
+according to your Tanzu Observability deployment.
+[arabic]
+.. WAVEFRONT_URL =
+https://*_\{YOUR_WAVEFRONT_INSTANCE}_*.wavefront.com/api/
+.. WAVEFRONT_TOKEN = *_YOUR_TOKEN_*
+. Push your Wavefront proxy:
++
+[source,powershell]
+----
+cf push
+----
+. Configure the Wavefront Proxy to listen on multiple ports:
+[arabic]
+.. Retrieve the application guid:
++
+[source,powershell]
+----
+cf app wavefront-proxy --guid
+----
+.. Use the app guid retrieved in the prior step to configure the ports
+for the Wavefront proxy.
++
+[source,powershell]
+----
+cf curl /v2/apps/{***YOUR_APP_GUID***} -X PUT -d '{\"ports\": [2878, 9811]}'
+----
+
+== Steeltoe Application
+
+[arabic]
+. Review your application settings and ensure they align with the url of
+the wavefront proxy.
++
+The tracing configuration, that points directly to the Wavefront proxy.
++
+[source,javascript]
+----
+"tracing": {
+      "exporter": {
+      "zipkin": {
+         "alwaysSample": true,
+         "useShortTraceIds ": true,
+         "endpoint": "http://wavefront-proxy.apps.internal:9411/api/v2/spans",
+         "validateCertificates": false
+      }
+   }
+}
+----
+. Edit your applications manifest file and ensure your internal (C2C)
+and public facing domains are respectively set.
++
+[source,yml]
+----
+applications:
+- name: funnyquotescoreui
+buildpacks:
+- dotnet_core_buildpack
+routes:
+- route: funnyquotescoreui.apps.internal
+- route: funnyquotescoreui.{YOUR_PUBLIC_DOMAIN}
+stack: cflinuxfs3
+----
+. Deploy your application with the following command:
++
+[source,powershell]
+----
+cf push
+----
+
+== Telegraf Deployment
+
+_Note: Telegraf is available for a number of platforms and is
+distributed several different ways. In this solution a choice was made
+to run a Linux (Debian/Ubuntu) version of Telegraf to support C2C
+networking. Docker images of Telegraf are available on
+https://hub.docker.com/_/telegraf[Docker Hub]. A choice was made to
+deploy a Telegraf executable over a docker based image to avoid
+complications of NFS volume mounts_
+
+[arabic]
+. Download the latest telegraph release
+https://dl.influxdata.com/telegraf/releases/telegraf-1.14.3-static_linux_amd64.tar.gz[(currently
+1.14.3)].
++
+[source,bash]
+----
+wget https://dl.influxdata.com/telegraf/releases/telegraf-1.14.3-static_linux_amd64.tar.gz
+----
+. Unpack Telegraf, for example:
++
+[source,bash]
+----
+tar -xzf telegraf-1.14.3-static_linux_amd64.tar.gz
+----
+. Take note of the following telegraf.conf file. It has been
+pre-configured to output metrics to the Wavefront proxy and scrape the
+demo application’s Prometheus endpoint. Overwrite the telegraf.conf file
+located in the directory where you unpacked the Telegraf executable with
+ths configuration.
++
+[source,conf]
+----
+[agent]
+  debug = false
+  quiet = true
+  omit_hostname = true
+
+###################################################
+#                     OUTPUTS                     #
+###################################################
+[[outputs.wavefront]]
+  host = "wavefront-proxy.apps.internal"
+  port = 2878
+  prefix = "funnyquotescoreui."
+
+###################################################
+#                      INPUTS                     #
+###################################################
+[[inputs.prometheus]]
+  urls = ["http://funnyquotescoreui.apps.internal/prometheus"]
+----
+. Use the following manifest.yml to configure your telegraf deployment:
++
+[source,yaml]
+----
+applications:
+- name: telegraf
+buildpacks:
+- binary_buildpack
+command: "./telegraf --config ./telegraf.conf"
+stack: cflinuxfs3
+health-check-type: process
+----
+. Deploy telegraf with the following command: Note that we will not
+start the application on deployment. This is so we can define
+link:#c2c-network-policy[C2C Network Policy].
++
+[source,bash]
+----
+   cf push --no-start
+----
+
+== C2C Network Policy
+
+[arabic]
+. Create the following C2C Network Policy Rules:
+[arabic]
+.. Telegraf to the Wavefront proxy on TCP port 2878:
++
+[source,powershell]
+----
+cf add-network-policy telegraf --destination-app wavefront-proxy --protocol tcp --port 2878
+----
+.. Telegraf to the Wavefront proxy on TCP port 9411:
++
+[source,powershell]
+----
+cf add-network-policy telegraf --destination-app wavefront-proxy --protocol tcp --port 9411
+----
+.. Telegraf to Observability application on TCP port 80:
++
+[source,powershell]
+----
+cf add-network-policy telegraf --destination-app observability --protocol tcp --port 80
+----
+.. Observability app to Wavefront proxy on TCP port 9411:
++
+[source,powershell]
+----
+cf add-network-policy observability --destination-app wavefront-proxy --protocol tcp --port 9411
+----
+.. Now that the C2C rules are configured, start the Telegraf application
++
+[source,powershell]
+----
+cf start telegraf
+----
+
+== Wavefront Endpoint
+
+[arabic]
+. You are now ready to visit your Tanzu Observability instance and
+observe application metrics and traces.
+[arabic]
+.. Navigate to https://\{YOUR_WAVEFRONT_ENDPOINT}.wavefront.com/
+.. From the Menu Select Applications > Application Status
+.. You should see a Zipkin Application in the list. Click into the
+Application and you should see an application with your Spring
+application name (Observability).
+.. Drill in to observe your application metrics and traces.
