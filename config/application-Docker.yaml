@@ -1,0 +1,16 @@
+Logging:
+  LogLevel:
+    Default: Information
+MySql:
+  Client:
+    Server: mysql
+    Database: funny-quotes
+    Username: root
+    Password: ""
+Spring: 
+  Cloud: 
+    Config: 
+      Uri: http://config-server:8888
+Eureka: 
+  Client:
+    EurekaServerServiceUrls: http://eureka:8761/eureka

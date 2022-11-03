@@ -10,12 +10,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Nuke.Common;
 using Nuke.Common.CI;
+using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.CloudFoundry;
+using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
@@ -32,9 +34,9 @@ using static Nuke.Common.IO.CompressionTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.IO.HttpTasks;
 using static Nuke.Common.Tools.CloudFoundry.CloudFoundryTasks;
+using static Nuke.Common.Tools.Docker.DockerTasks;
 using Project = Nuke.Common.ProjectModel.Project;
 
-[CheckBuildProjectConfigurations]
 class Build : NukeBuild
 {
 
@@ -49,7 +51,6 @@ class Build : NukeBuild
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
-
     [Solution] readonly Solution Solution;
     ProjectsList Projects;
     [GitRepository] readonly GitRepository GitRepository;
@@ -63,8 +64,6 @@ class Build : NukeBuild
     readonly string CfOrg;
     [Parameter("Cloud Foundry Space")]
     readonly string CfSpace;
-    [Parameter("Skip logging in Cloud Foundry and use the current logged in session")] 
-    readonly bool CfSkipLogin;
     [Parameter("Type of database plan (default: db-small)")]
     readonly string DbPlan = "db-small";
     [NerdbankGitVersioning] readonly NerdbankGitVersioning GitVersion;
@@ -91,10 +90,12 @@ class Build : NukeBuild
 
     protected override void OnBuildInitialized()
     {
-        GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"))
+        GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"));
+        if (GitHubToken != null)
         {
-            Credentials = new Credentials(GitHubToken, AuthenticationType.Bearer)
-        };
+            GitHubClient.Credentials = new Credentials(GitHubToken, AuthenticationType.Bearer);
+        }
+
         var gitIdParts = GitRepository.Identifier.Split("/");
         GitHubOwner = gitIdParts[0];
         GitHubRepo = gitIdParts[1];
@@ -166,7 +167,6 @@ class Build : NukeBuild
         });
 
     Target CfLogin => _ => _
-        .OnlyWhenStatic(() => !CfSkipLogin)
         .Requires(() => CfUsername, () => CfPassword, () => CfApiEndpoint)
         .Unlisted()
         .Executes(() =>
@@ -185,9 +185,9 @@ class Build : NukeBuild
         .Executes(async () =>
         {
             if (!GitRepository.IsGitHubRepository())
-                ControlFlow.Fail("Only supported when git repo remote is github");
+                Assert.Fail("Only supported when git repo remote is github");
             if(!IsGitPushedToRemote)
-                ControlFlow.Fail("Your local git repo has not been pushed to remote. Can't create release until source is upload");
+                Assert.Fail("Your local git repo has not been pushed to remote. Can't create release until source is upload");
 
             DeleteFile(ArtifactsDirectory / ArchiveName);
             Compress(ArtifactsDirectory, ArtifactsDirectory / ArchiveName);
@@ -220,7 +220,7 @@ class Build : NukeBuild
             
             DeleteFile(ArtifactsDirectory / ArchiveName);
             
-            Logger.Block(releaseAsset.BrowserDownloadUrl);
+            Serilog.Log.Information("{DownloadUrl}", releaseAsset.BrowserDownloadUrl);
         });
 
 
@@ -241,7 +241,7 @@ class Build : NukeBuild
             }
             catch (NotFoundException)
             {
-                Logger.Error($"There's no release with tag LATEST available for github repo {GitRepository.HttpsUrl}");
+                Serilog.Log.Error("There's no release with tag LATEST available for github repo {Url}", GitRepository.HttpsUrl);
             }
         });
 
@@ -268,6 +268,25 @@ class Build : NukeBuild
                 .CombineWith(Projects.TargetDeployable, (oo, project) => oo
                     .SetAppName(project.Name)), degreeOfParallelism: 5);
         });
+
+    // Target Run => _ => _
+    //     .After(Publish)
+    //     .Executes(() =>
+    //     {
+    //         
+    //         var isDockerWindows = DockerInfo().EnsureOnlyStd().Select(x => x.Text).Any(x => x.Contains("OSType: windows"));
+    //         if (!isDockerWindows)
+    //         {
+    //             Logger.Error("Docker must be in Windows container mode in order to run");
+    //             return;
+    //         }
+    //         ProcessTasks.StartProcess()
+    //         DockerRun(c => c
+    //             .SetImage("mcr.microsoft.com/dotnet/framework/aspnet:4.8")
+    //             .AddVolume(ArtifactsDirectory / nameof(Projects.FunnyQuotesUIForms), "c:/inetpub/wwwroot")
+    //             .AddPublish("49478", "80")
+    //             .SetRm(true));
+    //     });
     
     Target CreateServices => _ => _
         .DependsOn(SetTargetEnvironment)
@@ -279,18 +298,18 @@ class Build : NukeBuild
             File.WriteAllText(config, JObject.FromObject(new
             {
                 git = new {
-                    uri = "https://github.com/macsux/funnyquotes",
+                    uri = GitRepository.HttpsUrl,
                     searchPaths = "config"
                 }
             }).ToString(Formatting.Indented));
             CloudFoundryCreateService(c => c
-                    .SetService("p-config-server")
+                    .SetService("p.config-server")
                     .SetPlan("standard")
                     .SetInstanceName("config-server")
                     .SetConfigurationParameters(config));
             
             CloudFoundryCreateService(c => c
-                .SetService("p-service-registry")
+                .SetService("p.service-registry")
                 .SetPlan("standard")
                 .SetInstanceName("eureka"));
  
@@ -335,6 +354,25 @@ class Build : NukeBuild
                     .SetAppName(project.Name)));
 
         });
+
+    Target CreateConfigServer => _ => _
+        .Executes(() =>
+        {
+            var config = TemporaryDirectory / "configserver.json";
+            File.WriteAllText(config, JObject.FromObject(new
+            {
+                git = new {
+                    uri = GitRepository.HttpsUrl,
+                    searchPaths = "config"
+                }
+            }).ToString(Formatting.Indented));
+            CloudFoundryCreateService(c => c
+                .SetService("p-config-server")
+                .SetPlan("standard")
+                .SetInstanceName("config-server")
+                .SetConfigurationParameters(config));
+            DeleteFile(config);
+        });
     
     class ProjectsList
     {
@@ -356,15 +394,19 @@ class Build : NukeBuild
         .Git("status")
         .Select(x => x.Text)
         .Count(x => x.Contains("nothing to commit, working tree clean") || x.StartsWith("Your branch is up to date with")) == 2;
-    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance)
+
+    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance) => await CloudFoundryEnsureServiceReady(serviceInstance, TimeSpan.FromSeconds(5));
+    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance, TimeSpan checkInterval)
     {
+        
         var guid = CloudFoundry($"service {serviceInstance} --guid", logOutput: false, logInvocation: false).First().Text;
         bool IsCreating()
         {
             var jsonString = CloudFoundryCurl(c => c
                     .SetPath($"/v2/service_instances/{guid}")
-                    .DisableProcessLogOutput()
-                    .DisableProcessLogInvocation())
+                    // .DisableProcessLogOutput()
+                    // .DisableProcessLogInvocation())
+                    )
                 .EnsureOnlyStd()
                 .Aggregate(new StringBuilder(), (sb, output) => sb.AppendLine(output.Text), sb => sb.ToString());
             var response = JObject.Parse(jsonString);
@@ -373,12 +415,13 @@ class Build : NukeBuild
             return response.SelectToken("entity.last_operation.state")?.ToString() == "in progress";
         }
 
-        Logger.Normal($"Waiting service {serviceInstance} to finish provisioning");
+        Serilog.Log.Debug("Waiting service {ServiceInstance} to finish provisioning", serviceInstance);
         while (IsCreating())
         {
-            await Task.Delay(5000);
+            await Task.Delay(checkInterval);
         }
-        Logger.Normal($"Service {serviceInstance} is finished provisioning");
-
+        Serilog.Log.Debug("Service {ServiceInstance} is finished provisioning", serviceInstance);
     }
+    
+    // public void CreateConfigServer(string serviceName = "")
 }

@@ -86,9 +86,18 @@ namespace FunnyQuotesUIForms
 
         private void Application_Error(object sender, EventArgs e)
         {
-            var logger = ContainerProvider.ApplicationContainer.Resolve<ILogger<Global>>();
             var exception = Server.GetLastError();
-            logger.LogError(exception.Message, exception);
+            try
+            {
+                var logger = ContainerProvider.ApplicationContainer.Resolve<ILogger<Global>>();
+                logger.LogError(exception.Message, exception);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+                Console.Error.WriteLine(exception);
+            }
+
         }
     }
 }

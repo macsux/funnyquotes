@@ -513,6 +513,14 @@
       <Link>global-default.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\config\application-Development.yaml">
+      <Link>global-default.Development.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\config\application-Docker.yaml">
+      <Link>global-default.Docker.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\config\FunnyQuotesLegacyService.yaml">
       <Link>appsettings.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

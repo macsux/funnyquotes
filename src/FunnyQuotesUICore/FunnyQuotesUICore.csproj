@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Polly" Version="7.2.1" />
@@ -26,6 +26,10 @@
     </Content>
     <Content Include="..\..\config\application-Development.yaml">
       <Link>global-default.Development.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\config\application-Docker.yaml">
+      <Link>global-default.Docker.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\config\FunnyQuotesUICore.yaml">

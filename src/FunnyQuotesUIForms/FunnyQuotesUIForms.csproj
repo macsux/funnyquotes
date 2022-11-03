@@ -468,7 +468,11 @@
       <Link>appsettings.Development.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>    
+    </Content>
+    <Content Include="..\..\config\application-Docker.yaml">
+      <Link>global-default.Docker.yaml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.json" />
     
     <Content Include="Dockerfile" />
