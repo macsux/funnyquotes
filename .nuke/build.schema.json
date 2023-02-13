@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Build Schema",
+  "$ref": "#/definitions/build",
+  "definitions": {
+    "build": {
+      "type": "object",
+      "properties": {
+        "CfApiEndpoint": {
+          "type": "string",
+          "description": "Cloud Foundry Endpoint"
+        },
+        "CfOrg": {
+          "type": "string",
+          "description": "Cloud Foundry Org"
+        },
+        "CfPassword": {
+          "type": "string",
+          "description": "Cloud Foundry Password"
+        },
+        "CfSkipLogin": {
+          "type": "boolean",
+          "description": "Skip logging in Cloud Foundry and use the current logged in session"
+        },
+        "CfSpace": {
+          "type": "string",
+          "description": "Cloud Foundry Space"
+        },
+        "CfUsername": {
+          "type": "string",
+          "description": "Cloud Foundry Username"
+        },
+        "Configuration": {
+          "type": "string",
+          "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
+          "enum": [
+            "Debug",
+            "Release"
+          ]
+        },
+        "Continue": {
+          "type": "boolean",
+          "description": "Indicates to continue a previously failed build attempt"
+        },
+        "DbPlan": {
+          "type": "string",
+          "description": "Type of database plan (default: db-small)"
+        },
+        "GitHubToken": {
+          "type": "string",
+          "description": "GitHub personal access token with access to the repo"
+        },
+        "Help": {
+          "type": "boolean",
+          "description": "Shows the help text for this build assembly"
+        },
+        "Host": {
+          "type": "string",
+          "description": "Host for execution. Default is 'automatic'",
+          "enum": [
+            "AppVeyor",
+            "AzurePipelines",
+            "Bamboo",
+            "Bitbucket",
+            "Bitrise",
+            "GitHubActions",
+            "GitLab",
+            "Jenkins",
+            "Rider",
+            "SpaceAutomation",
+            "TeamCity",
+            "Terminal",
+            "TravisCI",
+            "VisualStudio",
+            "VSCode"
+          ]
+        },
+        "NoLogo": {
+          "type": "boolean",
+          "description": "Disables displaying the NUKE logo"
+        },
+        "Partition": {
+          "type": "string",
+          "description": "Partition to use on CI"
+        },
+        "Plan": {
+          "type": "boolean",
+          "description": "Shows the execution plan (HTML)"
+        },
+        "Profile": {
+          "type": "array",
+          "description": "Defines the profiles to load",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Root": {
+          "type": "string",
+          "description": "Root directory during build execution"
+        },
+        "Skip": {
+          "type": "array",
+          "description": "List of targets to be skipped. Empty list skips all dependencies",
+          "items": {
+            "type": "string",
+            "enum": [
+              "CfLogin",
+              "Clean",
+              "CreateServices",
+              "DeleteAllApps",
+              "Deploy",
+              "DownloadArtifacts",
+              "Publish",
+              "Release",
+              "Restore",
+              "SetTargetEnvironment"
+            ]
+          }
+        },
+        "Solution": {
+          "type": "string",
+          "description": "Path to a solution file that is automatically loaded"
+        },
+        "Target": {
+          "type": "array",
+          "description": "List of targets to be invoked. Default is '{default_target}'",
+          "items": {
+            "type": "string",
+            "enum": [
+              "CfLogin",
+              "Clean",
+              "CreateServices",
+              "DeleteAllApps",
+              "Deploy",
+              "DownloadArtifacts",
+              "Publish",
+              "Release",
+              "Restore",
+              "SetTargetEnvironment"
+            ]
+          }
+        },
+        "TargetProjects": {
+          "type": "array",
+          "description": "Runnable projects selected for action by the invoked target(s). Defaults to all",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Verbosity": {
+          "type": "string",
+          "description": "Logging verbosity during build execution. Default is 'Normal'",
+          "enum": [
+            "Minimal",
+            "Normal",
+            "Quiet",
+            "Verbose"
+          ]
+        }
+      }
+    }
+  }
+}

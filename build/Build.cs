@@ -22,6 +22,7 @@ using Nuke.Common.Tools.GitHub;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NerdbankGitVersioning;
+using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities.Collections;
 using Octokit;
 using static Nuke.Common.EnvironmentInfo;
@@ -34,11 +35,13 @@ using static Nuke.Common.IO.HttpTasks;
 using static Nuke.Common.Tools.CloudFoundry.CloudFoundryTasks;
 using Project = Nuke.Common.ProjectModel.Project;
 
-[CheckBuildProjectConfigurations]
 class Build : NukeBuild
 {
 
-
+    static Build()
+    {
+        Environment.SetEnvironmentVariable("NUKE_TELEMETRY_OPTOUT", "1");
+    }
     /// Support plugins are available for:
     ///   - JetBrains ReSharper        https://nuke.build/resharper
     ///   - JetBrains Rider            https://nuke.build/rider
@@ -88,13 +91,14 @@ class Build : NukeBuild
     GitHubClient GitHubClient { get; set; }
     string GitHubOwner { get; set; }
     string GitHubRepo { get; set; }
-
+    
     protected override void OnBuildInitialized()
     {
-        GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"))
+        GitHubClient = new GitHubClient(new ProductHeaderValue("nuke-build"));
+        if (GitHubToken != null)
         {
-            Credentials = new Credentials(GitHubToken, AuthenticationType.Bearer)
-        };
+            GitHubClient.Credentials = new Credentials(GitHubToken, AuthenticationType.Bearer);
+        }
         var gitIdParts = GitRepository.Identifier.Split("/");
         GitHubOwner = gitIdParts[0];
         GitHubRepo = gitIdParts[1];
@@ -114,9 +118,20 @@ class Build : NukeBuild
         .Unlisted()
         .Executes(() =>
         {
-            MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Restore"));
+            var packagesDir = RootDirectory / "src" / "packages";
+            NuGetTasks.NuGetRestore(c => c
+                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesLegacyService")
+                .SetPackagesDirectory(packagesDir));
+            NuGetTasks.NuGetRestore(c => c
+                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesUIForms")
+                .SetPackagesDirectory(packagesDir));
+            NuGetTasks.NuGetRestore(c => c
+                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesCookieDatabase")
+                .SetPackagesDirectory(packagesDir));
+
+            // MSBuild(s => s
+            //     .SetTargetPath(Solution)
+            //     .SetTargets("Restore"));
         });
 
     
@@ -185,9 +200,9 @@ class Build : NukeBuild
         .Executes(async () =>
         {
             if (!GitRepository.IsGitHubRepository())
-                ControlFlow.Fail("Only supported when git repo remote is github");
+                Assert.Fail("Only supported when git repo remote is github");
             if(!IsGitPushedToRemote)
-                ControlFlow.Fail("Your local git repo has not been pushed to remote. Can't create release until source is upload");
+                Assert.Fail("Your local git repo has not been pushed to remote. Can't create release until source is upload");
 
             DeleteFile(ArtifactsDirectory / ArchiveName);
             Compress(ArtifactsDirectory, ArtifactsDirectory / ArchiveName);
@@ -220,7 +235,7 @@ class Build : NukeBuild
             
             DeleteFile(ArtifactsDirectory / ArchiveName);
             
-            Logger.Block(releaseAsset.BrowserDownloadUrl);
+            Serilog.Log.Information(releaseAsset.BrowserDownloadUrl);
         });
 
 
@@ -241,7 +256,7 @@ class Build : NukeBuild
             }
             catch (NotFoundException)
             {
-                Logger.Error($"There's no release with tag LATEST available for github repo {GitRepository.HttpsUrl}");
+                Serilog.Log.Error($"There's no release with tag LATEST available for github repo {GitRepository.HttpsUrl}");
             }
         });
 
@@ -284,13 +299,13 @@ class Build : NukeBuild
                 }
             }).ToString(Formatting.Indented));
             CloudFoundryCreateService(c => c
-                    .SetService("p-config-server")
+                    .SetService("p.config-server")
                     .SetPlan("standard")
                     .SetInstanceName("config-server")
                     .SetConfigurationParameters(config));
             
             CloudFoundryCreateService(c => c
-                .SetService("p-service-registry")
+                .SetService("p.service-registry")
                 .SetPlan("standard")
                 .SetInstanceName("eureka"));
  
@@ -373,12 +388,12 @@ class Build : NukeBuild
             return response.SelectToken("entity.last_operation.state")?.ToString() == "in progress";
         }
 
-        Logger.Normal($"Waiting service {serviceInstance} to finish provisioning");
+        Serilog.Log.Debug($"Waiting service {serviceInstance} to finish provisioning");
         while (IsCreating())
         {
             await Task.Delay(5000);
         }
-        Logger.Normal($"Service {serviceInstance} is finished provisioning");
+        Serilog.Log.Debug($"Service {serviceInstance} is finished provisioning");
 
     }
 }
