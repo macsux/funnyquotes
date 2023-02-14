@@ -10,12 +10,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Nuke.Common;
 using Nuke.Common.CI;
+using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.CloudFoundry;
+using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
@@ -33,6 +35,7 @@ using static Nuke.Common.IO.CompressionTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.IO.HttpTasks;
 using static Nuke.Common.Tools.CloudFoundry.CloudFoundryTasks;
+using static Nuke.Common.Tools.Docker.DockerTasks;
 using Project = Nuke.Common.ProjectModel.Project;
 
 class Build : NukeBuild
@@ -66,8 +69,6 @@ class Build : NukeBuild
     readonly string CfOrg;
     [Parameter("Cloud Foundry Space")]
     readonly string CfSpace;
-    [Parameter("Skip logging in Cloud Foundry and use the current logged in session")] 
-    readonly bool CfSkipLogin;
     [Parameter("Type of database plan (default: db-small)")]
     readonly string DbPlan = "db-small";
     [NerdbankGitVersioning] readonly NerdbankGitVersioning GitVersion;
@@ -99,6 +100,7 @@ class Build : NukeBuild
         {
             GitHubClient.Credentials = new Credentials(GitHubToken, AuthenticationType.Bearer);
         }
+
         var gitIdParts = GitRepository.Identifier.Split("/");
         GitHubOwner = gitIdParts[0];
         GitHubRepo = gitIdParts[1];
@@ -236,7 +238,7 @@ class Build : NukeBuild
             
             DeleteFile(ArtifactsDirectory / ArchiveName);
             
-            Serilog.Log.Information(releaseAsset.BrowserDownloadUrl);
+            Serilog.Log.Information("{DownloadUrl}", releaseAsset.BrowserDownloadUrl);
         });
 
 
@@ -257,7 +259,7 @@ class Build : NukeBuild
             }
             catch (NotFoundException)
             {
-                Serilog.Log.Error($"There's no release with tag LATEST available for github repo {GitRepository.HttpsUrl}");
+                Serilog.Log.Error("There's no release with tag LATEST available for github repo {Url}", GitRepository.HttpsUrl);
             }
         });
 
@@ -284,6 +286,25 @@ class Build : NukeBuild
                 .CombineWith(Projects.TargetDeployable, (oo, project) => oo
                     .SetAppName(project.Name)), degreeOfParallelism: 5);
         });
+
+    // Target Run => _ => _
+    //     .After(Publish)
+    //     .Executes(() =>
+    //     {
+    //         
+    //         var isDockerWindows = DockerInfo().EnsureOnlyStd().Select(x => x.Text).Any(x => x.Contains("OSType: windows"));
+    //         if (!isDockerWindows)
+    //         {
+    //             Logger.Error("Docker must be in Windows container mode in order to run");
+    //             return;
+    //         }
+    //         ProcessTasks.StartProcess()
+    //         DockerRun(c => c
+    //             .SetImage("mcr.microsoft.com/dotnet/framework/aspnet:4.8")
+    //             .AddVolume(ArtifactsDirectory / nameof(Projects.FunnyQuotesUIForms), "c:/inetpub/wwwroot")
+    //             .AddPublish("49478", "80")
+    //             .SetRm(true));
+    //     });
     
     Target CreateServices => _ => _
         .DependsOn(SetTargetEnvironment)
@@ -295,7 +316,7 @@ class Build : NukeBuild
             File.WriteAllText(config, JObject.FromObject(new
             {
                 git = new {
-                    uri = "https://github.com/macsux/funnyquotes",
+                    uri = GitRepository.HttpsUrl,
                     searchPaths = "config"
                 }
             }).ToString(Formatting.Indented));
@@ -351,6 +372,25 @@ class Build : NukeBuild
                     .SetAppName(project.Name)));
 
         });
+
+    Target CreateConfigServer => _ => _
+        .Executes(() =>
+        {
+            var config = TemporaryDirectory / "configserver.json";
+            File.WriteAllText(config, JObject.FromObject(new
+            {
+                git = new {
+                    uri = GitRepository.HttpsUrl,
+                    searchPaths = "config"
+                }
+            }).ToString(Formatting.Indented));
+            CloudFoundryCreateService(c => c
+                .SetService("p-config-server")
+                .SetPlan("standard")
+                .SetInstanceName("config-server")
+                .SetConfigurationParameters(config));
+            DeleteFile(config);
+        });
     
     class ProjectsList
     {
@@ -372,8 +412,11 @@ class Build : NukeBuild
         .Git("status")
         .Select(x => x.Text)
         .Count(x => x.Contains("nothing to commit, working tree clean") || x.StartsWith("Your branch is up to date with")) == 2;
-    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance)
+
+    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance) => await CloudFoundryEnsureServiceReady(serviceInstance, TimeSpan.FromSeconds(5));
+    public static async Task CloudFoundryEnsureServiceReady(string serviceInstance, TimeSpan checkInterval)
     {
+        
         var guid = CloudFoundry($"service {serviceInstance} --guid", logOutput: false, logInvocation: false).First().Text;
         bool IsCreating()
         {
@@ -397,4 +440,6 @@ class Build : NukeBuild
         Serilog.Log.Debug($"Service {serviceInstance} is finished provisioning");
 
     }
+    
+    // public void CreateConfigServer(string serviceName = "")
 }

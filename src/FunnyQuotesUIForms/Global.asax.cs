@@ -18,7 +18,8 @@ using Steeltoe.Discovery.Eureka;
 using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Extensions.Logging;
 using Steeltoe.Management.Endpoint.Health.Contributor;
-
+using Steeltoe.Management.EndpointOwinAutofac;
+using static FunnyQuotes.StartupHelper;
 
 namespace FunnyQuotesUIForms
 {
@@ -47,9 +48,10 @@ namespace FunnyQuotesUIForms
                 builder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>().AsSelf(); // via management endpoints
                 builder.RegisterHystrixMetricsStream(config);
                 
-                builder.RegisterType<DiskSpaceContributor>().As<IHealthContributor>();
+                builder.RegisterCloudFoundryActuators(config);
+
                 builder.RegisterType<ConfigServerHealthContributor>().As<IHealthContributor>();
-                builder.RegisterType<EurekaApplicationsHealthContributor>().As<IHealthContributor>();
+                // builder.RegisterType<EurekaApplicationsHealthContributor>().As<IHealthContributor>();
                 builder.RegisterType<EurekaServerHealthContributor>().As<IHealthContributor>();
                 
                 // register 4 different implementations of IFunnyQuoteService and assign them unique names
@@ -67,7 +69,8 @@ namespace FunnyQuotesUIForms
                 var container = builder.Build();
                 container.StartDiscoveryClient(); // start eureka client and add current app into the registry
                 container.StartHystrixMetricsStream(); // start publishing hystrix stream
-                container.StartActuators(); // map routes for actuator endpoints
+                StartupHelper.StartActuators(container);
+                // container.StartActuators(); // map routes for actuator endpoints
                 _containerProvider = new ContainerProvider(container); // setup autofac WebForms integration
                 
                 logger.LogInformation(">> FunnyQuotesLegacyUI Started <<");
@@ -83,9 +86,18 @@ namespace FunnyQuotesUIForms
 
         private void Application_Error(object sender, EventArgs e)
         {
-            var logger = ContainerProvider.ApplicationContainer.Resolve<ILogger<Global>>();
             var exception = Server.GetLastError();
-            logger.LogError(exception.Message, exception);
+            try
+            {
+                var logger = ContainerProvider.ApplicationContainer.Resolve<ILogger<Global>>();
+                logger.LogError(exception.Message, exception);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+                Console.Error.WriteLine(exception);
+            }
+
         }
     }
 }

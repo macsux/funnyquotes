@@ -6,4 +6,7 @@ Eureka:
     HealthMonitoredApps: FunnyQuotesOwinWindowsService,FunnyQuotesLegacyService
     ShouldRegisterWithEureka: false
     ValidateCertificates: false
-    
+    ShouldRegisterWithEureka: false
+    ValidateCertificates: false
+FunnyQuotes:
+  ClientType: wcf
