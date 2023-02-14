@@ -107,10 +107,10 @@
       <HintPath>..\packages\Microsoft.Extensions.Configuration.FileExtensions.3.1.19\lib\netstandard2.0\Microsoft.Extensions.Configuration.FileExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-   <Reference Include="Microsoft.Extensions.Configuration.Json, Version=3.1.19.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-     <HintPath>..\packages\Microsoft.Extensions.Configuration.Json.3.1.19\lib\netstandard2.0\Microsoft.Extensions.Configuration.Json.dll</HintPath>
-     <Private>True</Private>
-   </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Json, Version=3.1.19.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Json.3.1.19\lib\netstandard2.0\Microsoft.Extensions.Configuration.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.1.19.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.3.1.19\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
       <Private>True</Private>
@@ -171,12 +171,17 @@
       <HintPath>..\packages\Microsoft.Extensions.Primitives.3.1.19\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
-
+    <Reference Include="NetEscapades.Configuration.Yaml, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NetEscapades.Configuration.Yaml.2.2.0\lib\net461\NetEscapades.Configuration.Yaml.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -252,6 +257,12 @@
       <HintPath>..\packages\Steeltoe.Management.EndpointBase.2.5.5\lib\netstandard2.0\Steeltoe.Management.EndpointBase.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Steeltoe.Management.EndpointOwin, Version=2.5.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Steeltoe.Management.EndpointOwin.2.5.5\lib\net461\Steeltoe.Management.EndpointOwin.dll</HintPath>
+    </Reference>
+    <Reference Include="Steeltoe.Management.EndpointOwinAutofac, Version=2.5.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Steeltoe.Management.EndpointOwinAutofac.2.5.5\lib\net461\Steeltoe.Management.EndpointOwinAutofac.dll</HintPath>
+    </Reference>
     <Reference Include="Steeltoe.Management.EndpointWeb, Version=2.5.5.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Steeltoe.Management.EndpointWeb.2.5.5\lib\net461\Steeltoe.Management.EndpointWeb.dll</HintPath>
       <Private>True</Private>
@@ -307,8 +318,9 @@
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http">
-      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -384,7 +396,7 @@
       <HintPath>..\packages\System.Text.Encodings.Web.4.7.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-   <Reference Include="System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+    <Reference Include="System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
       <HintPath>..\packages\System.Text.Json.4.7.2\lib\net461\System.Text.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -447,6 +459,9 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="WindowsBase" />
+    <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\YamlDotNet.11.2.1\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\config\application.yaml">
@@ -461,13 +476,12 @@
       <Link>appsettings.Development.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>    
+    </Content>
     <Content Include="..\..\config\application-Docker.yaml">
       <Link>global-default.Docker.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.json" />
-    
     <Content Include="Dockerfile" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -609,9 +623,6 @@
       <Project>{49bd6b18-07eb-437b-850c-496aa88276bc}</Project>
       <Name>FunnyQuotesLegacyCommon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Steeltoe.Management.EndpointOwinAutofac" Version="2.5.5" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
