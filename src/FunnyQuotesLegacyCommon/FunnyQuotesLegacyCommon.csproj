@@ -16,11 +16,11 @@
     <ItemGroup>
       <PackageReference Include="Autofac" Version="4.6.2" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.9" />
-      <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryAutofac" Version="2.5.1" />
-      <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerBase" Version="2.5.1" />
-      <PackageReference Include="Steeltoe.Extensions.Logging.DynamicLogger" Version="2.5.1" />
+      <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryAutofac" Version="2.5.5" />
+      <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerBase" Version="2.5.5" />
+      <PackageReference Include="Steeltoe.Extensions.Logging.DynamicLogger" Version="2.5.5" />
 <!--      <PackageReference Include="Steeltoe.Management.EndpointOwinAutofac" Version="2.5.1" />-->
-      <PackageReference Include="Steeltoe.Management.EndpointWeb" Version="2.5.1" />
+      <PackageReference Include="Steeltoe.Management.EndpointWeb" Version="2.5.5" />
     </ItemGroup>
 
     <ItemGroup>

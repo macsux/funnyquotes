@@ -119,6 +119,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var packagesDir = RootDirectory / "src" / "packages";
+            
             NuGetTasks.NuGetRestore(c => c
                 .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesLegacyService")
                 .SetPackagesDirectory(packagesDir));
@@ -128,10 +129,10 @@ class Build : NukeBuild
             NuGetTasks.NuGetRestore(c => c
                 .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesCookieDatabase")
                 .SetPackagesDirectory(packagesDir));
-
-            // MSBuild(s => s
-            //     .SetTargetPath(Solution)
-            //     .SetTargets("Restore"));
+            
+            MSBuild(s => s
+                .SetTargetPath(Solution)
+                .SetTargets("Restore"));
         });
 
     
