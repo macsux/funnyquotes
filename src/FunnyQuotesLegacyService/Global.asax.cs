@@ -43,7 +43,7 @@ namespace FunnyQuotesLegacyService
             builder.RegisterOptions();
             builder.RegisterDiscoveryClient(configuration);
             builder.RegisterMySqlConnection(configuration);
-            builder.RegisterDbContext<FunnyQuotesCookieDbContext>(configuration);
+            builder.RegisterMySqlDbContext<FunnyQuotesCookieDbContext>(configuration);
             builder.RegisterType<FunnyQuoteServiceWcf>();
             var container = builder.Build();
             container.StartActuators();

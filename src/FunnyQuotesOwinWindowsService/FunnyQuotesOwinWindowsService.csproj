@@ -73,10 +73,10 @@
       <Version>5.2.7</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json">
-      <Version>3.1.9</Version>
+      <Version>3.1.19</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console">
-      <Version>3.1.9</Version>
+      <Version>3.1.19</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Owin.Cors">
       <Version>4.1.1</Version>
@@ -103,10 +103,6 @@
   <ItemGroup>
     <Content Include="..\..\config\application.yaml">
       <Link>global-default.yaml</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\config\application-Development.yaml">
-      <Link>global-default.Development.yaml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\config\application-Development.yaml">

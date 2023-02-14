@@ -184,7 +184,6 @@ class Build : NukeBuild
         });
 
     Target CfLogin => _ => _
-        .OnlyWhenStatic(() => !CfSkipLogin)
         .Requires(() => CfUsername, () => CfPassword, () => CfApiEndpoint)
         .Unlisted()
         .Executes(() =>
