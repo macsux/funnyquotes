@@ -12,7 +12,7 @@ Technical Features Demonstrated:
 - Config server with GIT repo
 
 # Solution Projects
-![Architecture](https://github.com/Pivotal-Field-Engineering/funny-quotes-demo/blob/master/docs/images/architecture.png)
+![Architecture](docs/images/architecture.png)
 
 The solution revolves around a simple application that displays random quotes when a button is pressed. It also features a Kill command to simulate application failure.
 * FunnyQuotesUIForms - Web forms GUI. Depends on Eureka and Config Server. Depending on config value served by Config Server, the source of the messages shown will be switched between local in memory, ASMX service, WCF service, or REST
@@ -29,7 +29,7 @@ The solution revolves around a simple application that displays random quotes wh
 * Use `create-services.bat` and `manifest.yml` in `\scripts` to push everything to PCF (copy manifest into publish folder) 
 
 ### Prerequisites
-* Visual Studio 2017 with .NET core support
+* Visual Studio with .NET core support
 * Docker with images for
   * Config server
   * Eureka
