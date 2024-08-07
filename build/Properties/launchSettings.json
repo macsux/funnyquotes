@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Publish": {
+      "commandName": "Project",
+      "commandLineArgs": "Publish"
+    },
+    "Deploy": {
+      "commandName": "Project",
+      "commandLineArgs": "Deploy --skip SetTargetEnvironment"
+    }
+  }
+}

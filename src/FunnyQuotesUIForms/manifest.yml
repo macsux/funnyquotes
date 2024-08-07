@@ -4,7 +4,7 @@ applications:
 - name: FunnyQuotesUIForms
   random-route: true
   memory: 512M
-  health-check-type: http
-  health-check-http-endpoint: /
+  health-check-type: process
+  #health-check-http-endpoint: /
   buildpack: hwc_buildpack
   stack: windows

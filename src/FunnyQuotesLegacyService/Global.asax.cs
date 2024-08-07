@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Entity;
+using System.Net;
 using System.Web;
 using Autofac;
 using Autofac.Integration.Wcf;
@@ -32,6 +33,8 @@ namespace FunnyQuotesLegacyService
 
         private void Application_Start(object sender, EventArgs e)
         {
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             var configuration = StartupHelper.Configuration;
             var builder = new ContainerBuilder();
