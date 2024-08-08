@@ -4,40 +4,33 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Nuke.Common;
-using Nuke.Common.CI;
-using Nuke.Common.CI.AzurePipelines;
-using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.CloudFoundry;
-using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
-using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NerdbankGitVersioning;
 using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities.Collections;
 using Octokit;
-using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 using static Nuke.Common.IO.CompressionTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.IO.HttpTasks;
 using static Nuke.Common.Tools.CloudFoundry.CloudFoundryTasks;
-using static Nuke.Common.Tools.Docker.DockerTasks;
 using Project = Nuke.Common.ProjectModel.Project;
 
+[PublicAPI]
 class Build : NukeBuild
 {
 
@@ -113,28 +106,15 @@ class Build : NukeBuild
         .Executes(() =>
         {
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            EnsureCleanDirectory(ArtifactsDirectory);
+            ArtifactsDirectory.CreateOrCleanDirectory();
         });
 
     Target Restore => _ => _
         .Unlisted()
         .Executes(() =>
         {
-            var packagesDir = RootDirectory / "src" / "packages";
-            
-            NuGetTasks.NuGetRestore(c => c
-                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesLegacyService")
-                .SetPackagesDirectory(packagesDir));
-            NuGetTasks.NuGetRestore(c => c
-                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesUIForms")
-                .SetPackagesDirectory(packagesDir));
-            NuGetTasks.NuGetRestore(c => c
-                .SetProcessWorkingDirectory(RootDirectory / "src" / "FunnyQuotesCookieDatabase")
-                .SetPackagesDirectory(packagesDir));
-            
-            MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Restore"));
+            DotNetRestore(c => c
+                .SetProcessWorkingDirectory(RootDirectory));
         });
 
     
@@ -144,7 +124,7 @@ class Build : NukeBuild
         .Requires(() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         .Executes(() =>
         {
-            EnsureCleanDirectory(ArtifactsDirectory);
+            ArtifactsDirectory.CreateOrCleanDirectory();
             var webProjects = Projects.TargetDeployable
                 .Where(x => x == Projects.FunnyQuotesUIForms || x == Projects.FunnyQuotesLegacyService);
             MSBuild(s => s
@@ -179,7 +159,7 @@ class Build : NukeBuild
                     .SetConfiguration(Configuration));
             foreach (var project in Solution.Projects)
             {
-                DeleteFile(ArtifactsDirectory / project.Name / "appsettings.Development.yaml");
+                (ArtifactsDirectory / project.Name / "appsettings.Development.yaml").DeleteFile();
             }
         });
 
@@ -206,8 +186,8 @@ class Build : NukeBuild
             if(!IsGitPushedToRemote)
                 Assert.Fail("Your local git repo has not been pushed to remote. Can't create release until source is upload");
 
-            DeleteFile(ArtifactsDirectory / ArchiveName);
-            Compress(ArtifactsDirectory, ArtifactsDirectory / ArchiveName);
+            (ArtifactsDirectory / ArchiveName).DeleteFile();
+            ArtifactsDirectory.CompressTo(ArchiveName);
             
             var releaseName = $"LATEST";
             Release release;
@@ -234,8 +214,8 @@ class Build : NukeBuild
             
             var releaseAssetUpload = new ReleaseAssetUpload(ArchiveName, "application/zip", File.OpenRead(ArtifactsDirectory / ArchiveName), null);
             var releaseAsset = await GitHubClient.Repository.Release.UploadAsset(release, releaseAssetUpload);
-            
-            DeleteFile(ArtifactsDirectory / ArchiveName);
+
+            (ArtifactsDirectory / ArchiveName).DeleteFile();
             
             Serilog.Log.Information("{DownloadUrl}", releaseAsset.BrowserDownloadUrl);
         });
@@ -245,7 +225,7 @@ class Build : NukeBuild
         .Description("Downloads precompiled binaries from GitHub releases page")
         .Executes(async () =>
         {
-            EnsureCleanDirectory(ArtifactsDirectory);
+            ArtifactsDirectory.CreateOrCleanDirectory();
             try
             {
                 var release = await GitHubClient.Repository.Release.Get(GitHubOwner, GitHubRepo, "LATEST");
@@ -286,24 +266,6 @@ class Build : NukeBuild
                     .SetAppName(project.Name)), degreeOfParallelism: 5);
         });
 
-    // Target Run => _ => _
-    //     .After(Publish)
-    //     .Executes(() =>
-    //     {
-    //         
-    //         var isDockerWindows = DockerInfo().EnsureOnlyStd().Select(x => x.Text).Any(x => x.Contains("OSType: windows"));
-    //         if (!isDockerWindows)
-    //         {
-    //             Logger.Error("Docker must be in Windows container mode in order to run");
-    //             return;
-    //         }
-    //         ProcessTasks.StartProcess()
-    //         DockerRun(c => c
-    //             .SetImage("mcr.microsoft.com/dotnet/framework/aspnet:4.8")
-    //             .AddVolume(ArtifactsDirectory / nameof(Projects.FunnyQuotesUIForms), "c:/inetpub/wwwroot")
-    //             .AddPublish("49478", "80")
-    //             .SetRm(true));
-    //     });
     
     Target CreateServices => _ => _
         .DependsOn(SetTargetEnvironment)

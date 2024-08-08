@@ -1,25 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net47</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
+        <RuntimeIdentifier>win</RuntimeIdentifier>
         <OutputType>Library</OutputType>
     </PropertyGroup>
-<!--<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">-->
-<!--    <PropertyGroup>-->
-<!--        <OutputType>Library</OutputType>-->
-<!--        <AppDesignerFolder>Properties</AppDesignerFolder>-->
-<!--        <RootNamespace>FunnyQuotes</RootNamespace>-->
-<!--        <AssemblyName>FunnyQuotesLegacyCommon</AssemblyName>-->
-<!--        <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>-->
-<!--        -->
-<!--    </PropertyGroup>-->
-    
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="4.6.2" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.19" />
+      <PackageReference Include="Autofac" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
       <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryAutofac" Version="2.5.5" />
       <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerBase" Version="2.5.5" />
       <PackageReference Include="Steeltoe.Extensions.Logging.DynamicLogger" Version="2.5.5" />
-<!--      <PackageReference Include="Steeltoe.Management.EndpointOwinAutofac" Version="2.5.1" />-->
       <PackageReference Include="Steeltoe.Management.EndpointWeb" Version="2.5.5" />
     </ItemGroup>
 

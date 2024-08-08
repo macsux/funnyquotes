@@ -1,15 +1,10 @@
-﻿using System;
-using System.IO;
-using FunnyQuotesCommon;
+﻿using FunnyQuotesCommon;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Extensions.Logging;
-using Steeltoe.Management.CloudFoundry;
 using Steeltoe.Management.Endpoint;
 
 namespace FunnyQuotesUICore
@@ -31,7 +26,7 @@ namespace FunnyQuotesUICore
                 })
                 .AddCloudFoundryConfiguration()
                 .AddConfigServer()
-                .AddCloudFoundryActuators()
+                .AddAllActuators()
                 .UseStartup<Startup>()
                 .ConfigureLogging((builderContext, loggingBuilder) =>
                 {

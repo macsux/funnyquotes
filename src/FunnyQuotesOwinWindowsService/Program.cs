@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Owin.Hosting;
 
 namespace FunnyQuotesOwinWindowsService
 {
@@ -16,19 +10,21 @@ namespace FunnyQuotesOwinWindowsService
         /// </summary>
         static void Main(string[] args)
         {
-            Console.WriteLine("=== Starting app === ");
+
             try
             {
                 var service = new Service1();
                 var launchAsConsole = args.Length > 0 ? (args[0] == "console") : Environment.UserInteractive;
                 if (launchAsConsole)
                 {
+                    Console.WriteLine("=== Starting app as Console === ");
                     service.Start();
                     Console.ReadLine();
                     service.Stop();
                 }
                 else
                 {
+                    Console.WriteLine("=== Starting app as Windows Service === ");
                     ServiceBase[] ServicesToRun;
                     ServicesToRun = new ServiceBase[]
                     {

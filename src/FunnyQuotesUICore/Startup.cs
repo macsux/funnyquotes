@@ -15,14 +15,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Discovery.Client;
-using Steeltoe.Management.CloudFoundry;
-using Steeltoe.Management.Endpoint;
-using Steeltoe.Management.Endpoint.CloudFoundry;
 using Steeltoe.Management.Endpoint.Metrics;
-using Steeltoe.Management.Tracing;
 using Steeltoe.Security.Authentication.CloudFoundry;
 
 namespace FunnyQuotesUICore
@@ -41,14 +36,13 @@ namespace FunnyQuotesUICore
         public void  ConfigureServices(IServiceCollection services)
         {
             // while we're registering FunnyQuotesConfiguration as part of .Configure call, we need that data now
-            // as we're making registration decisions. We manually gonna create an instance and map it on to config
+            // as we're making registration decisions. We manually going to create an instance and map it on to config
             var funnyquotesConfig = new FunnyQuotesConfiguration();
             Configuration.GetSection("FunnyQuotes").Bind(funnyquotesConfig);
             ((IConfigurationRoot)Configuration).AutoRefresh(TimeSpan.FromSeconds(10)); // start a background timer thread to update config every 10 seconds
                                                                                        // alternatively can do the same thing by POSTing to /refresh endpoint
             services.AddPrometheusActuator();
             services.AddDiscoveryClient(Configuration); // register eureka (service discovery) with container. Can inject IDiscoveryClient
-            services.AddDistributedTracing(Configuration, builder => builder.UseZipkinWithTraceOptions(services)); //
             services.AddTransient<DiscoveryHttpMessageHandler>(); // used for HttpClientFactory
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // .net core way of accessing current http context (legacy HttpContext.Current)
             services.AddLogging(); // can inject ILogger<T> 
@@ -58,7 +52,6 @@ namespace FunnyQuotesUICore
             
             services.AddOptions();
             services.Configure<FunnyQuotesConfiguration>(Configuration.GetSection("FunnyQuotes")); // adds typed configuration object and map it to a section of config
-            services.AddHystrixCommand<RestFunnyQuotesClient.GetQuoteCommand>("Core.RandomQuote", "Core.RandomQuote", Configuration); // register injectable hystrix command
             services.AddTransient<IFunnyQuoteService>(provider =>
             {
                 // the concrete implementation of IFunnyQuoteService is based on what's configured in config provider
@@ -72,7 +65,7 @@ namespace FunnyQuotesUICore
                 return provider.GetService<LocalFunnyQuoteService>();
 
             });
-            services.AddHttpClient<RestFunnyQuotesClient.GetQuoteCommand>(client =>
+            services.AddHttpClient<RestFunnyQuotesClient>(client =>
             {
                 client.BaseAddress = new Uri("http://FunnyQuotesOwinWindowsService/api/FunnyQuotes/");
             }).AddHttpMessageHandler<DiscoveryHttpMessageHandler>(); // use eureka integration with all HttpClient objects
@@ -123,16 +116,10 @@ namespace FunnyQuotesUICore
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                // endpoints.MapAllActuators();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseHystrixRequestContext(); // allows request context to be accessible within hystrix execution model.
-                                            // this is necessary because there's some thread switching happening
-
-            
         }
     }
 }

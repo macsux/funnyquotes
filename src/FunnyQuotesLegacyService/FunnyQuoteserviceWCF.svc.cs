@@ -16,7 +16,7 @@ namespace FunnyQuotesLegacyService
             _dbContextFactory = dbContextFactory;
         }
 
-        public FunnyQuotesCookieDbContext DbContext { get; set; }
+        public FunnyQuotesCookieDbContext DbContext { get; set; } = null!;
 
         public async Task<string> GetQuoteAsync()
         {

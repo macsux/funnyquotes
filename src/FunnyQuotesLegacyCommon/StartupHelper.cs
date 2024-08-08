@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Web.Http.Description;
 using Autofac;
 using FunnyQuotesCommon;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-using Steeltoe.Common.Diagnostics;
 using Steeltoe.Common.HealthChecks;
 using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
@@ -33,6 +30,7 @@ namespace FunnyQuotes
                 .AddCloudFoundry()
                 .Build();
             var containerBuilder = new ContainerBuilder();
+            // containerBuilder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>().As<IDynamicLoggerProvider>().AsSelf();
             containerBuilder.RegisterConsoleLogging();
             containerBuilder.RegisterLogging(config);
             containerBuilder.RegisterOptions();
@@ -54,7 +52,7 @@ namespace FunnyQuotes
                 .AddEnvironmentVariables()
                 .Build()
                 .AutoRefresh(TimeSpan.FromSeconds(10)));
-        public static string Environment => System.Environment.GetEnvironmentVariable("ASPNET_ENVIRONMENT") ?? "Production";
+        public static string Environment => System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
         public static ILogger BootstrapLogger => _bootstrapLogger.Value;
         public static IConfiguration Configuration => _configuration.Value;
         

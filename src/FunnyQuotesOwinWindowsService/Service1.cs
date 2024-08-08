@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 
 namespace FunnyQuotesOwinWindowsService
 {
     public partial class Service1 : ServiceBase
     {
-        private IDisposable _webhostLifeline;
+        private IDisposable _webhostLifeline = null!;
         public Service1()
         {
             InitializeComponent();

@@ -2,45 +2,35 @@
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using FunnyQuotesUIForms.FunnyQuotesLegacyService;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesUIForms.Clients
 {
     public class AsmxFunnyQuotesClient : IFunnyQuoteService
     {
-        private readonly IOptionsSnapshot<FunnyQuotesConfiguration> _config;
+        private readonly ILogger _logger;
         private readonly DiscoveryHttpClientHandlerBase _dicoveryAddressResolver;
 
-        public AsmxFunnyQuotesClient(IDiscoveryClient discoveryClient, IOptionsSnapshot<FunnyQuotesConfiguration> config)
+        public AsmxFunnyQuotesClient(IDiscoveryClient discoveryClient, ILogger<AsmxFunnyQuotesClient> logger)
         {
-            _config = config;
+            _logger = logger;
             _dicoveryAddressResolver = new DiscoveryHttpClientHandlerBase(discoveryClient);
         }
 
         public string GetQuote()
         {
-            var options = new HystrixCommandOptions(HystrixCommandGroupKeyDefault.AsKey("Legacy"), HystrixCommandKeyDefault.AsKey("Cookie.Asmx"));
-            var cmd = new HystrixCommand<string>(options,
-                run: GetCookieRun,
-                fallback: GetCookieFallback);
-            return cmd.Execute();
-        }
-
-        private string GetCookieRun()
-        {
             var client = new FunnyQuoteserviceLegacy();
             var uri = "http://FunnyQuotesLegacyService" + new Uri(client.Url).AbsolutePath;
             client.Url = _dicoveryAddressResolver.LookupService(new Uri(uri)).ToString();
+            _logger.LogInformation("Calling ASMX method {Method} on {Uri}", nameof(client.GetCookie), client.Url);
             return client.GetCookie();
         }
 
-        public string GetCookieFallback() => _config.Value.FailedMessage;
-
         public Task<string> GetQuoteAsync()
         {
-            return Task.Run(() => GetQuote());
+            return Task.Run(GetQuote);
         }
     }
 }

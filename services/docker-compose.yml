@@ -1,41 +1,12 @@
 version: "2.0"
 
 services:
-  FunnyQuotesUIForms:
-    image: mcr.microsoft.com/dotnet/framework/aspnet:4.8
-    ports:
-      - 5001:80
-    volumes:
-      - ./FunnyQuotesUIForms:c:/inetpub/wwwroot
-    environment: 
-      ASPNETCORE_ENVIRONMENT: Docker
-  FunnyQuotesUICore:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
-    ports:
-      - 5002:8080
-    volumes:
-      - ./FunnyQuotesUICore:c:/app
-    entrypoint: ["dotnet","/app/FunnyQuotesUICore.dll","--urls=http://*:8080"]
-    working_dir: /app
-  FunnyQuotesLegacyService:
-    image: mcr.microsoft.com/dotnet/framework/aspnet:4.8
-    ports:
-      - 6001:80
-    volumes:
-      - ./FunnyQuotesLegacyService:c:/inetpub/wwwroot
-  FunnyQuotesOwinWindowsService:
-    image: mcr.microsoft.com/dotnet/framework/aspnet:4.8
-    ports:
-      - 6002:8080
-    volumes:
-      - ./FunnyQuotesOwinWindowsService:c:/app
-    entrypoint: ["c:/app/FunnyQuotesOwinWindowsService.exe","console"]
-    environment: 
-      ASPNETCORE_ENVIRONMENT: Docker
   mysql:
-    image: steeltoeoss/mysql
+    image: 'mysql:5.7'
     ports:
-      - 3306:3306
+      - '3306:3306'
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
   configserver:
     image: steeltoeoss/config-server
     restart: always

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web;
 using Autofac;
@@ -8,7 +9,6 @@ using FunnyQuotesCommon;
 using FunnyQuotesUIForms.Clients;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Configuration.Autofac;
 using Steeltoe.Common.HealthChecks;
 using Steeltoe.Common.Logging.Autofac;
@@ -17,15 +17,13 @@ using Steeltoe.Discovery.Client;
 using Steeltoe.Discovery.Eureka;
 using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Extensions.Logging;
-using Steeltoe.Management.Endpoint.Health.Contributor;
 using Steeltoe.Management.EndpointOwinAutofac;
-using static FunnyQuotes.StartupHelper;
 
 namespace FunnyQuotesUIForms
 {
     public class Global : HttpApplication, IContainerProviderAccessor
     {
-        private static IContainerProvider _containerProvider;
+        private static IContainerProvider _containerProvider = null!;
 
         public IContainerProvider ContainerProvider => _containerProvider;
 
@@ -45,8 +43,7 @@ namespace FunnyQuotesUIForms
                 builder.RegisterDiscoveryClient(config);
                 
                 builder.RegisterLogging(config); // allow loggers to be injectable by AutoFac
-                builder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>().AsSelf(); // via management endpoints
-                builder.RegisterHystrixMetricsStream(config);
+                // builder.RegisterType<DynamicConsoleLoggerProvider>().As<ILoggerProvider>().As<IDynamicLoggerProvider>().AsSelf(); // via management endpoints
                 
                 builder.RegisterCloudFoundryActuators(config);
 
@@ -68,9 +65,7 @@ namespace FunnyQuotesUIForms
 
                 var container = builder.Build();
                 container.StartDiscoveryClient(); // start eureka client and add current app into the registry
-                container.StartHystrixMetricsStream(); // start publishing hystrix stream
                 StartupHelper.StartActuators(container);
-                // container.StartActuators(); // map routes for actuator endpoints
                 _containerProvider = new ContainerProvider(container); // setup autofac WebForms integration
                 
                 logger.LogInformation(">> FunnyQuotesLegacyUI Started <<");

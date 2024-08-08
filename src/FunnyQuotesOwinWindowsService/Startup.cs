@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Configuration;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Migrations;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
@@ -13,7 +9,6 @@ using FunnyQuotes;
 using FunnyQuotesCommon;
 using FunnyQuotesCookieDatabase;
 using FunnyQuotesOwinWindowsService.Authentication;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Owin.Cors;
@@ -24,7 +19,6 @@ using Steeltoe.Common.Logging.Autofac;
 using Steeltoe.Common.Options.Autofac;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
-using Steeltoe.Extensions.Configuration.ConfigServer;
 using Steeltoe.Management.EndpointOwinAutofac;
 using Steeltoe.Security.Authentication.CloudFoundry;
 

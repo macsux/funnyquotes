@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FunnyQuotesCommon;
 using FunnyQuotesUICore.Security;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Steeltoe.Security.Authentication.CloudFoundry;
 

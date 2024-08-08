@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 using FunnyQuotesCookieDatabase.Migrations;
-using MySql.Data.Entity;
+using MySql.Data.EntityFramework;
 
 namespace FunnyQuotesCookieDatabase
 {
@@ -9,6 +9,7 @@ namespace FunnyQuotesCookieDatabase
     {
         public FunnyQuotesCookieDbContext() : base("name=FunnyQuotes")
         {
+            
         }
 
         public FunnyQuotesCookieDbContext(string nameOrConnectionString) : base(nameOrConnectionString)
@@ -16,7 +17,7 @@ namespace FunnyQuotesCookieDatabase
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<FunnyQuotesCookieDbContext, Configuration>(true));
         }
 
-        public DbSet<FunnyQuote> FunnyQuotes { get; set; }
+        public DbSet<FunnyQuote> FunnyQuotes { get; set; } = null!;
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

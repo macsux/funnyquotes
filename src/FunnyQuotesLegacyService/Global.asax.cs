@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.Entity;
 using System.Net;
 using System.Web;
 using Autofac;
@@ -22,7 +21,7 @@ namespace FunnyQuotesLegacyService
 {
     public class Global : HttpApplication, IContainerProviderAccessor
     {
-        private static IContainerProvider _containerProvider;
+        private static IContainerProvider _containerProvider = null!;
 
         public IContainerProvider ContainerProvider => _containerProvider;
 

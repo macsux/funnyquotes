@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using FunnyQuotesCommon;
-using FunnyQuotesUICore.Clients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Steeltoe.Common.Discovery;
 
 namespace FunnyQuotesUICore.Controllers
 {

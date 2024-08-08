@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ServiceModel;
 using System.Threading.Tasks;
 using FunnQuotesWcfClient;
 using FunnyQuotesCommon;
 using Microsoft.Extensions.Options;
 using Polly;
-using Polly.CircuitBreaker;
 using Polly.Wrap;
-using Steeltoe.CircuitBreaker.Hystrix;
 using Steeltoe.Common.Discovery;
 using Steeltoe.Discovery;
 using IFunnyQuoteService = FunnyQuotesCommon.IFunnyQuoteService;
